@@ -1,0 +1,28 @@
+Package: lazyTyper
+Type: Package
+Title: Lazy but (Very) Strong Typing and Constants for R
+Version: 0.0.0.9000
+Date: 2016-08-12
+Authors@R: c(person("Andreas", "Kersting", role = c("aut", "cre"),
+    email = "andreas@akersting.de"), person("R Core team", role = "ctb",
+    comment = "remove/rm code extracted from base R"))
+Description: lazyTyper adds the concept of strong typing to R. Before its first
+    use, a variable can be declared to be of a specific type. Existing variables
+    can be casted to a specific type. Assigning values of the wrong type to such
+    typed variables will throw an error. In addition to pure type information,
+    it is also possible to associate additional properties with a variable, e.g.
+    the length of a vector. Such properties are also validated when the variable
+    is modified. Furthermore, lazyTyper extends R with (partial) support for
+    constants.
+URL: https://github.com/akersting/lazyTyper
+BugReports: https://github.com/akersting/lazyTyper/issues
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+RoxygenNote: 5.0.1
+Suggests: testthat,
+    rstudioapi,
+    covr,
+    knitr,
+    rmarkdown

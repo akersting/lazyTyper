@@ -1,0 +1,19 @@
+Name: Insert %<-%
+Description: Inserts ` %<-% ` at the cursor position.
+Binding: insertTypedAssignAddin
+Interactive: false
+
+Name: Insert %<-% w/o Space
+Description: Inserts `%<-% ` at the cursor position (no leading space).
+Binding: insertTypedAssignWOSpaceAddin
+Interactive: false
+
+Name: Insert %<-s%
+Description: Inserts ` %<-s% ` at the cursor position.
+Binding: insertSecureTypedAssignAddin
+Interactive: false
+
+Name: Insert %<-s% w/o Space
+Description: Inserts `%<-s% ` at the cursor position (no leading space).
+Binding: insertSecureTypedAssignWOSpaceAddin
+Interactive: false
