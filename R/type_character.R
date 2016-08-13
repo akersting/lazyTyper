@@ -15,6 +15,7 @@ checkPropertiesFun.character <- function(x) {
               x[["min_length"]] >= 0)
     if (!is.null(x[["length"]])) {
       warning("Ignoring 'min_length' since 'length' is given.")
+      x[["min_length"]] <- NULL
     }
   }
   if (!is.null(x[["max_length"]])) {
@@ -22,6 +23,7 @@ checkPropertiesFun.character <- function(x) {
               x[["max_length"]] >= 0)
     if (!is.null(x[["length"]])) {
       warning("Ignoring 'max_length' since 'length' is given.")
+      x[["max_length"]] <- NULL
     }
     if (!is.null(x[["min_length"]])) {
       stopifnot(x[["max_length"]] >= x[["min_length"]])
@@ -35,6 +37,7 @@ checkPropertiesFun.character <- function(x) {
     stopifnot(is.character(x[["pattern"]]))
     if (!is.null(x[["set"]])) {
       warning("Ignoring 'pattern' since 'set' is given.")
+      x[["pattern"]] <- NULL
     }
   }
 
@@ -42,6 +45,8 @@ checkPropertiesFun.character <- function(x) {
     stopifnot(is.logical(x[["allow_NA"]]),
               length(x[["allow_NA"]]) == 1)
   }
+
+  x
 }
 
 # nocov start

@@ -15,6 +15,7 @@ checkPropertiesFun.numeric <- function(x) {
               x[["min_length"]] >= 0)
     if (!is.null(x[["length"]])) {
       warning("Ignoring 'min_length' since 'length' is given.")
+      x[["min_length"]] <- NULL
     }
   }
   if (!is.null(x[["max_length"]])) {
@@ -22,6 +23,7 @@ checkPropertiesFun.numeric <- function(x) {
               x[["max_length"]] >= 0)
     if (!is.null(x[["length"]])) {
       warning("Ignoring 'max_length' since 'length' is given.")
+      x[["max_length"]] <- NULL
     }
     if (!is.null(x[["min_length"]])) {
       stopifnot(x[["max_length"]] >= x[["min_length"]])
@@ -35,12 +37,14 @@ checkPropertiesFun.numeric <- function(x) {
     stopifnot(is.numeric(x[["min"]]), length(x[["min"]]) == 1)
     if (!is.null(x[["set"]])) {
       warning("Ignoring 'min' since 'set' is given.")
+      x[["min"]] <- NULL
     }
   }
   if (!is.null(x[["max"]])) {
     stopifnot(is.numeric(x[["max"]]), length(x[["max"]]) == 1)
     if (!is.null(x[["set"]])) {
       warning("Ignoring 'max' since 'set' is given.")
+      x[["max"]] <- NULL
     }
     if (!is.null(x[["min"]])) {
       stopifnot(x[["max"]] >= x[["min"]])
@@ -55,6 +59,8 @@ checkPropertiesFun.numeric <- function(x) {
     stopifnot(is.logical(x[["allow_NaN"]]),
               length(x[["allow_NaN"]]) == 1)
   }
+
+  x
 }
 
 # nocov start
