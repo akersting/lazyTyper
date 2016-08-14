@@ -2,11 +2,12 @@
 
 export("%<-%")
 export("%<-s%")
+export(args2list)
 export(cast)
 export(const)
 export(declare)
 export(g)
-export(getLHSVariableName)
+export(hasValue)
 export(is.typed)
 export(is.valid)
 export(markInvalidWError)

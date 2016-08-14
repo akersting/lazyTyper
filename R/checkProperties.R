@@ -1,10 +1,8 @@
 # !diagnostics suppress=types, custom_types
 checkProperties <- function(type, properties) {
-  checkPropertiesNames(properties)
-
   checkPropertiesFun <- getCheckPropertiesFun(type)
 
-  checkPropertiesFun(properties)
+  return(do.call(checkPropertiesFun, properties))
 }
 
 getCheckPropertiesFun <- function(type) {

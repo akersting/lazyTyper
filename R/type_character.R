@@ -1,52 +1,80 @@
-checkPropertiesFun.character <- function(x) {
-  valid_properties <- c("length", "min_length", "max_length", "set", "pattern",
-                        "allow_NA")
-  if (any(!names(x) %in% valid_properties)) {
-    stop("Invalid properties: ",
-         paste0(names(x)[!names(x) %in% valid_properties], collapse = ", "))
+#' Typed Character Vectors
+#'
+#' The following arguments can be passed as \code{...} to \code{\link{declare}}
+#' and \code{\link{cast}}.
+#'
+#' @param length the exact length of the vector.
+#' @param min_length,max_length the minimum/maximum length of the vector
+#'   (ignored if \code{lenght} is given).
+#' @param *set the set of allowed values as a character vector.
+#' @param *pattern a regular expression which all elements of the vector must
+#'   match to (ignored if \code{set} is given).
+#' @param allow_NA are \code{NA} values allowed? \code{FALSE} is ignored here if
+#'   \code{set} contains \code{NA}.
+#'
+#' @details Properties marked with a * are checked using non-primitive
+#'   functions, which increases the reference count of the object. Hence, after
+#'   checking the validity of a variable with such a property, it can no longer
+#'   be modified in place, i.e the next modification of it will result in a copy
+#'   of it being made.
+#'
+#' @name character
+#' @aliases character
+#' @family types
+NULL
+
+checkPropertiesFun.character <- function(length, min_length, max_length, set,
+                                         pattern, allow_NA) {
+  if (hasValue("length")) {
+    stopifnot(is.numeric(length), length(length) == 1, length >= 0)
   }
 
-  if (!is.null(x[["length"]])) {
-    stopifnot(is.numeric(x[["length"]]), length(x[["length"]]) == 1,
-              x[["length"]] >= 0)
-  }
-  if (!is.null(x[["min_length"]])) {
-    stopifnot(is.numeric(x[["min_length"]]), length(x[["min_length"]]) == 1,
-              x[["min_length"]] >= 0)
-    if (!is.null(x[["length"]])) {
+  if (hasValue("min_length")) {
+    if (hasValue("length")) {
       warning("Ignoring 'min_length' since 'length' is given.")
-      x[["min_length"]] <- NULL
+      rm(min_length)
+    } else {
+      stopifnot(is.numeric(min_length), length(min_length) == 1,
+                min_length >= 0)
     }
   }
-  if (!is.null(x[["max_length"]])) {
-    stopifnot(is.numeric(x[["max_length"]]), length(x[["max_length"]]) == 1,
-              x[["max_length"]] >= 0)
-    if (!is.null(x[["length"]])) {
+
+  if (hasValue("max_length")) {
+    if (hasValue("length")) {
       warning("Ignoring 'max_length' since 'length' is given.")
-      x[["max_length"]] <- NULL
-    }
-    if (!is.null(x[["min_length"]])) {
-      stopifnot(x[["max_length"]] >= x[["min_length"]])
+      rm(max_length)
+    } else {
+      stopifnot(is.numeric(max_length), length(max_length) == 1,
+                max_length >= 0)
+      if (hasValue("min_length")) {
+        stopifnot(max_length >= min_length)
+      }
     }
   }
 
-  if (!is.null(x[["set"]])) {
-    stopifnot(is.character(x[["set"]]))
+  if (hasValue("set")) {
+    stopifnot(is.character(set))
   }
-  if (!is.null(x[["pattern"]])) {
-    stopifnot(is.character(x[["pattern"]]))
-    if (!is.null(x[["set"]])) {
+
+  if (hasValue("pattern")) {
+    if (hasValue("set")) {
       warning("Ignoring 'pattern' since 'set' is given.")
-      x[["pattern"]] <- NULL
+      rm(pattern)
+    } else {
+      stopifnot(is.character(pattern), length(pattern) == 1)
+      grep(pattern, "")  # test the regular expression
     }
   }
 
-  if (!is.null(x[["allow_NA"]])) {
-    stopifnot(is.logical(x[["allow_NA"]]),
-              length(x[["allow_NA"]]) == 1)
+  if (hasValue("allow_NA")) {
+    stopifnot(is.logical(allow_NA), length(allow_NA) == 1, !is.na(allow_NA))
+    if (!allow_NA && hasValue("set") && any(is.na(set))) {
+      warning("Ignoring 'allow_NA = FALSE' since 'set' contains 'NA'.")
+      rm(allow_NA)
+    }
   }
 
-  x
+  args2list()
 }
 
 # nocov start

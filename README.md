@@ -2,7 +2,7 @@
 lazyTyper
 =========
 
-[![Build Status](https://travis-ci.org/akersting/lazyTyper.svg?branch=develop)](https://travis-ci.org/akersting/lazyTyper) [![Coverage Status](https://codecov.io/github/akersting/lazyTyper/coverage.svg?branch=develop)](https://codecov.io/github/akersting/lazyTyper?branch=develop)
+[![Build Status](https://travis-ci.org/akersting/lazyTyper.svg?branch=develop)](https://travis-ci.org/akersting/lazyTyper) [![Coverage Status](https://codecov.io/github/akersting/lazyTyper/coverage.svg?branch=develop)](https://codecov.io/github/akersting/lazyTyper)
 
 lazyTyper adds the concept of strong typing to R. Before its first use, a variable can be declared to be of a specific type. Existing variables can be casted to a specific type. Assigning values of the wrong type to such typed variables will throw an error.
 
@@ -134,7 +134,7 @@ With `const` it is possible to mark an existing variable as constant. If it is m
 my_const <- runif(5)
 const(my_const)
 g(my_const)
-#> [1] 0.45508660 0.01938115 0.16323587 0.19126105 0.12070913
+#> [1] 0.5651927 0.6273441 0.9417289 0.2745959 0.3723574
 my_const <- 1:5
 g(my_const)
 #> Error in g(my_const): Variable 'my_const' is not valid:
@@ -158,7 +158,7 @@ Registering Custom Types
 You can easily register a custom type. To do so you need three things:
 
 -   a type name, e.g. "symmetric\_matrix". By using the name of a built-in type you can overload it *for all newly typed variables* -- already typed variables will keep their built-in type.
--   a function to check the validity of the additional properties passed to either declare or cast when creating a typed variable. This function must accept a single formal argument `x`, namely a (possibly empty) named list of properties and it should throw an error if invalid properties are used. The names of `x` are guaranteed to be unique and unequal to the empty string.
+-   a function to check the validity of the additional properties passed to either declare or cast when creating a typed variable. This function must accept these additional properties as (named) parameters and it should throw an error if properties used are invalid. Afterwards, it must return -- as a (named) list -- the set of properties which should finally be stored. This set can be different from the original arguments to this function, e.g. because one of two inconsistent properties was removed. There is the helper function `args2list` in the package, which returns the *current* values of the arguments of the calling function as a list.
 -   a quoted expression used to test the validity of a typed variable by e.g. `is.valid`, `%<-%` or `g`. This expression is evaluated in the environment of the variable to test and should hence (ideally) not create any (temporary) objects. Within this expression you must refer to the variable to test by `.XXX.` and the list of properties is available as `.lazyTyper_properties.` This expression should never fail but rather set the logical value `.lazyTyper_valid` to `FALSE` if the variable is invalid. In this case the "error"-attribute of the variable `.lazyTyper_valid` should contain the reason(s) for the invalidity as a character vector. The recommended way to set `lazyTyper_valid` to `FALSE` and to add a(nother) error message to it is by calling the helper function `setInvalidWError("This is pasted to ", "a single error message!")`.
 
 ToDo: explain how to register custom types and overload built-in types.

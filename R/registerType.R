@@ -19,8 +19,6 @@ registerType <- function(type, checkPropertiesFun, check_type_expr,
                          varname = ".XXX.", env = types) {
   stopifnot(is.character(type), length(type) == 1)
   stopifnot(is.function(checkPropertiesFun))
-  stopifnot(length(formals(checkPropertiesFun)) == 1,
-            "x" == names(formals(checkPropertiesFun)))
   stopifnot(is.language(check_type_expr))
   stopifnot(is.character(varname), length(varname) == 1)
 
@@ -31,34 +29,40 @@ registerType <- function(type, checkPropertiesFun, check_type_expr,
          envir = env)
 }
 
-#' Register Custom Types
+#'Register Custom Types
 #'
-#' @param type a character string with the name of the type to register.
-#' @param checkPropertiesFun a function to be used for checking whether the
-#'   additional properties supplied when typing a variable to type \code{type}
-#'   are correct (no missing compulsory properties, no unknown properties, no
-#'   inconsistent ones etc.). It must accept a single formal argument \code{x},
-#'   a potentially empty named list. It should throw an error if the supplied
-#'   list of additional properties is invalid.
-#' @param check_type_expr a quoted expression to be used for checking whether a
-#'   variable is of type \code{type}. Within this expression, refer to the
-#'   variable to check by what is specified in the \code{varname}-argument (as a
-#'   name, i.e. without the quotes). The default is \code{.XXX.}. The list of
-#'   additional properties is available as \code{.lazyTyper_properties}.
+#'@param type a character string with the name of the type to register.
+#'@param checkPropertiesFun a function to check the validity of the additional
+#'  properties passed to either declare or cast when creating a typed variable.
+#'  This function must accept these additional properties as (named) parameters
+#'  and it should throw an error if properties used are invalid. Afterwards, it
+#'  must return -- as a (named) list -- the set of properties which should
+#'  finally be stored. This set can be different from the original arguments to
+#'  this function, e.g. because one of two inconsistent properties was removed.
+#'  There is the helper function \code{\link{args2list}}, which returns the
+#'  *current* values of the arguments of the calling function as a list.
+#'@param check_type_expr a quoted expression to be used for checking whether a
+#'  variable is of type \code{type}. Within this expression, refer to the
+#'  variable to check by what is specified in the \code{varname}-argument (as a
+#'  name, i.e. without the quotes). The default is \code{.XXX.}. The list of
+#'  additional properties is available as \code{.lazyTyper_properties}.
 #'
-#'   This expression should never fail, i.e. throw an error. To indicate that
-#'   the variable under consideration is not of type \code{type}, the logical
-#'   variable \code{.lazyTyper_valid} should be set to \code{FALSE}. In
-#'   addition, the attribute "error" of \code{.lazyTyper_valid} (a character
-#'   vector), should describe the reason(s) why the variable is invalid. The
-#'   preferred way to both set \code{.lazyTyper_valid} to \code{FALSE} and to
-#'   add an (additional) message to its attribute "error", is to call
-#'   \code{markInvalidWError}.
-#' @param varname a character string with the name of the placeholder-variable
-#'   used in \code{check_type_expr} to be replaced with the actual variable to
-#'   validate.
+#'  This expression should never fail, i.e. throw an error. To indicate that the
+#'  variable under consideration is not of type \code{type}, the logical
+#'  variable \code{.lazyTyper_valid} should be set to \code{FALSE}. In addition,
+#'  the attribute "error" of \code{.lazyTyper_valid} (a character vector),
+#'  should describe the reason(s) why the variable is invalid. The preferred way
+#'  to both set \code{.lazyTyper_valid} to \code{FALSE} and to add an
+#'  (additional) message to its attribute "error", is to call
+#'  \code{markInvalidWError}.
+#'@param varname a character string with the name of the placeholder-variable
+#'  used in \code{check_type_expr} to be replaced with the actual variable to
+#'  validate.
 #'
-#' @export
+#'@seealso useful helper functions: \code{\link{markInvalidWError}},
+#'  \code{\link{args2list}}, \code{\link{hasValue}}
+#'
+#'@export
 registerCustomType <- function(type, checkPropertiesFun, check_type_expr,
                                varname = ".XXX.") {
   registerType(type = type, checkPropertiesFun = checkPropertiesFun,

@@ -12,7 +12,7 @@ test_that("cast fails for already typed object", {
 
 test_that("cast fails for misspecified properties", {
   a <- 1
-  expect_error(cast(a, "numeric", 1))
+  expect_error(cast(a, "numeric", a = 1))
   b <- 2
   expect_error(cast(b, "numeric", a = 1, 2))
   d <- 3

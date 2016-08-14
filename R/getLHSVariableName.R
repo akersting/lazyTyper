@@ -8,12 +8,11 @@
 #' @return a character string.
 #'
 #' @keywords internal
-#' @export
 #'
 #' @examples
 #' assignment <- quote(names(var)[1:3] <- letters[1:3])
 #' lhs <- assignment[[2]]  # left-hand side of assignment
-#' getLHSVariableName(lhs)  # "var"
+#' lazyTyper:::getLHSVariableName(lhs)  # "var"
 getLHSVariableName <- function(x) {
   if (is.name(x)) {
     return(as.character(x))

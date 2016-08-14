@@ -1,7 +1,7 @@
-checkPropertiesFun.const <- function(x) {
-  stopifnot(length(x) == 1, names(x) == "value")
+checkPropertiesFun.const <- function(value) {
+  stopifnot(hasValue("value"))
 
-  x
+  args2list()
 }
 
 check_type_expr.const <- quote({

@@ -41,11 +41,12 @@ getCheckTypeExpr <- function(type, varname) {
   check_type_expr
 }
 
+#' Mark the Variable Currently Under Validation as Invalid
+#'
 #' @param ... one or more character strings to be pasted together to an error
 #'   message (without a separator), which describes why a variable is not of the
 #'   declared type.
 #'
-#' @rdname registerCustomType
 #' @keywords internal
 #' @export
 markInvalidWError <- function(...) {

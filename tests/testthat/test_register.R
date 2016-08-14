@@ -7,10 +7,8 @@ test_that("custom times can be registered", {
     }
   })
 
-  checkPropertiesFun <- function(x) {
-    if (length(x) != 0) {
-      stop("did not expect any properties")
-    }
+  checkPropertiesFun <- function() {
+    args2list()
   }
 
   registerCustomType("log", checkPropertiesFun, check_type_expr)

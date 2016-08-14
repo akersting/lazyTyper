@@ -19,7 +19,7 @@ the variable which would be created or modified by a \emph{valid} assignment.
 \examples{
 assignment <- quote(names(var)[1:3] <- letters[1:3])
 lhs <- assignment[[2]]  # left-hand side of assignment
-getLHSVariableName(lhs)  # "var"
+lazyTyper:::getLHSVariableName(lhs)  # "var"
 }
 \keyword{internal}
 
