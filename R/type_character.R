@@ -26,7 +26,7 @@ NULL
 checkPropertiesFun.character <- function(length, min_length, max_length, set,
                                          pattern, allow_NA) {
   if (hasValue("length")) {
-    stopifnot(is.numeric(length), length(length) == 1, length >= 0)
+    stopifnot(is.numeric(length), base::length(length) == 1, length >= 0)
   }
 
   if (hasValue("min_length")) {
@@ -34,7 +34,7 @@ checkPropertiesFun.character <- function(length, min_length, max_length, set,
       warning("Ignoring 'min_length' since 'length' is given.")
       rm(min_length)
     } else {
-      stopifnot(is.numeric(min_length), length(min_length) == 1,
+      stopifnot(is.numeric(min_length), base::length(min_length) == 1,
                 min_length >= 0)
     }
   }
@@ -44,7 +44,7 @@ checkPropertiesFun.character <- function(length, min_length, max_length, set,
       warning("Ignoring 'max_length' since 'length' is given.")
       rm(max_length)
     } else {
-      stopifnot(is.numeric(max_length), length(max_length) == 1,
+      stopifnot(is.numeric(max_length), base::length(max_length) == 1,
                 max_length >= 0)
       if (hasValue("min_length")) {
         stopifnot(max_length >= min_length)
@@ -61,13 +61,14 @@ checkPropertiesFun.character <- function(length, min_length, max_length, set,
       warning("Ignoring 'pattern' since 'set' is given.")
       rm(pattern)
     } else {
-      stopifnot(is.character(pattern), length(pattern) == 1)
+      stopifnot(is.character(pattern), base::length(pattern) == 1)
       grep(pattern, "")  # test the regular expression
     }
   }
 
   if (hasValue("allow_NA")) {
-    stopifnot(is.logical(allow_NA), length(allow_NA) == 1, !is.na(allow_NA))
+    stopifnot(is.logical(allow_NA), base::length(allow_NA) == 1,
+              !is.na(allow_NA))
     if (!allow_NA && hasValue("set") && any(is.na(set))) {
       warning("Ignoring 'allow_NA = FALSE' since 'set' contains 'NA'.")
       rm(allow_NA)

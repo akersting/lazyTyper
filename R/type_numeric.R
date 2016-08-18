@@ -27,7 +27,7 @@ NULL
 checkPropertiesFun.numeric <- function(length, min_length, max_length, set, min,
                                        max, allow_NA, allow_NaN) {
   if (hasValue("length")) {
-    stopifnot(is.numeric(length), length(length) == 1, length >= 0)
+    stopifnot(is.numeric(length), base::length(length) == 1, length >= 0)
   }
 
   if (hasValue("min_length")) {
@@ -35,7 +35,7 @@ checkPropertiesFun.numeric <- function(length, min_length, max_length, set, min,
       warning("Ignoring 'min_length' since 'length' is given.")
       rm(min_length)
     } else {
-      stopifnot(is.numeric(min_length), length(min_length) == 1,
+      stopifnot(is.numeric(min_length), base::length(min_length) == 1,
                 min_length >= 0)
     }
   }
@@ -45,7 +45,7 @@ checkPropertiesFun.numeric <- function(length, min_length, max_length, set, min,
       warning("Ignoring 'max_length' since 'length' is given.")
       rm(max_length)
     } else {
-      stopifnot(is.numeric(max_length), length(max_length) == 1,
+      stopifnot(is.numeric(max_length), base::length(max_length) == 1,
                 max_length >= 0)
 
       if (hasValue("min_length")) {
@@ -62,7 +62,7 @@ checkPropertiesFun.numeric <- function(length, min_length, max_length, set, min,
       warning("Ignoring 'min' since 'set' is given.")
       rm(min)
     } else {
-      stopifnot(is.numeric(min), length(min) == 1)
+      stopifnot(is.numeric(min), base::length(min) == 1)
     }
   }
   if (hasValue("max")) {
@@ -70,7 +70,7 @@ checkPropertiesFun.numeric <- function(length, min_length, max_length, set, min,
       warning("Ignoring 'max' since 'set' is given.")
       rm(max)
     } else {
-      stopifnot(is.numeric(max), length(max) == 1)
+      stopifnot(is.numeric(max), base::length(max) == 1)
 
       if (hasValue("min")) {
         stopifnot(max >= min)
@@ -79,14 +79,16 @@ checkPropertiesFun.numeric <- function(length, min_length, max_length, set, min,
   }
 
   if (hasValue("allow_NA")) {
-    stopifnot(is.logical(allow_NA), length(allow_NA) == 1, !is.na(allow_NA))
+    stopifnot(is.logical(allow_NA), base::length(allow_NA) == 1,
+              !is.na(allow_NA))
     if (!allow_NA && hasValue("set") && any(is.na(set))) {
       warning("Ignoring 'allow_NA = FALSE' since 'set' contains 'NA'.")
       rm(allow_NA)
     }
   }
   if (hasValue("allow_NaN")) {
-    stopifnot(is.logical(allow_NaN), length(allow_NaN) == 1, !is.na(allow_NaN))
+    stopifnot(is.logical(allow_NaN), base::length(allow_NaN) == 1,
+              !is.na(allow_NaN))
     if (!allow_NaN && hasValue("set") && any(is.nan(set))) {
       warning("Ignoring 'allow_NaN = FALSE' since 'set' contains 'NaN'.")
       rm(allow_NaN)
