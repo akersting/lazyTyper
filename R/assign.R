@@ -78,6 +78,12 @@ NULL
 #' @export
 `%<-%` <- function(x, value) {
   cl <- sys.call()
+
+  # rules out usage as 'what' in do.call() or 'FUN' in *apply()
+  if (!identical(cl[[1]], quote(`%<-%`)) || length(cl) != 3) {
+    stop("Invalid usage of typed assignment operator.")
+  }
+
   varname <- getLHSVariableName(cl[[2]])
 
   if (length(cl[[3]]) != 2 || !identical(cl[[3]][[1]], quote(.))) {
@@ -105,6 +111,12 @@ NULL
 #' @export
 `%<-s%` <- function(x, value) {
   cl <- sys.call()
+
+  # rules out usage as 'what' in do.call() or 'FUN' in *apply()
+  if (!identical(cl[[1]], quote(`%<-%`)) || length(cl) != 3) {
+    stop("Invalid usage of typed assignment operator.")
+  }
+
   varname <- getLHSVariableName(cl[[2]])
 
   if (length(cl[[3]]) != 2 || !identical(cl[[3]][[1]], quote(.))) {
