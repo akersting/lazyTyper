@@ -6,7 +6,7 @@ lazyTyper
 
 lazyTyper adds the concept of strong typing to R. Before its first use, a variable can be declared to be of a specific type. Existing variables can be casted to a specific type. Assigning values of the wrong type to such typed variables will throw an error.
 
-In addition to pure type information, it is also possible to associate additional properties with a variable, e.g. the length of a vector. Such properties are also validated when the variable is modified.
+In addition to pure type information, it is also possible to associate additional properties with a variable, e.g. the length of a vector. Such properties are also validated when the variable is modified.
 
 Installation
 ------------
@@ -61,22 +61,22 @@ is.valid(b)
 
 ### Assignment Operators
 
-There are two different operators for typed assignment: `%<-s%` and `%<-%`. The former one is kind of more "secure", since the variable (apparently) is not modified if the assignment would violate its type or its properties.
+There are two different operators for typed assignment: `%<-s%` and `%<-%`. The former one is kind of more “secure”, since the variable (apparently) is not modified if the assignment would violate its type or its properties.
 
 ``` r
-a %<-s% 1:3
-names(a) %<-% c("first", "second", "third")
-a[1] %<-s% 2
+a %<-s% .(1:3)
+names(a) %<-% .(c("first", "second", "third"))
+a[1] %<-s% .(2)
 
-a[4] %<-s% 4
-#> Error in a[4] %<-s% 4: Typed assignment failed for variable 'a'. Reason:
+a[4] %<-s% .(4)
+#> Error in a[4] %<-s% .(4): Typed assignment failed for variable 'a'. Reason:
 #> wrong length: expected 3, actual 4
 a
 #>  first second  third 
 #>      2      2      3
 
-class(a) %<-s% "character"
-#> Error in class(a) %<-s% "character": Typed assignment failed for variable 'a'. Reason:
+class(a) %<-s% .("character")
+#> Error in class(a) %<-s% .("character"): Typed assignment failed for variable 'a'. Reason:
 #> wrong type: character
 a
 #>  first second  third 
@@ -88,10 +88,10 @@ is.valid(a)
 `%<-%`, on the other hand, might leave the variable in an invalid state.
 
 ``` r
-b %<-% "Hello World!"
+b %<-% .("Hello World!")
 
-b %<-% 123
-#> Error in b %<-% 123: This assignment invalidated the variable 'b'. Reason:
+b %<-% .(123)
+#> Error in b %<-% .(123): This assignment invalidated the variable 'b'. Reason:
 #> Wrong type: double
 b
 #> [1] 123
@@ -109,9 +109,23 @@ myFancyFun(var) <- c(TRUE, NA, FALSE)
 
 It is almost always better to use the quicker and more memory friendly `%<-%`, except maybe when using R interactively.
 
+For both operators the right hand side must be enclosed in `.()`. This ensures that assignment expressions where the right hand side contains binary operators like `+` or `&` are evaluated in correct or — to be more precise — expected order. The necessity for this arises from the high precedence of custom operators like `%<-%` and `%<-s%`. Because of this,
+
+``` r
+a %<-% 3 + 7
+```
+
+would actually be interpreted as
+
+``` r
+(a %<-% 3) + 7,
+```
+
+which is probably not what we want. Of course, wrapping the right hand side in normal parentheses would generally solve this problem. However, there is no way to test for their presence or absence from within the operator functions, while this can be done for `.()`, which technically is a function call.
+
 #### RStudio Addins
 
-The package ships with addins for RStudio (&gt;= v0.99.878) for quickly inserting "%&lt;-%" and "%&lt;-s%". Go to Tools &gt; Addins &gt; Browse Addins... &gt; Keyboard Shortcuts... to assign keyboard shortcuts for this.
+The package ships with addins for RStudio (&gt;= v0.99.1111) for quickly inserting `%<-% .()` and `%<-s% .()`. Go to Tools &gt; Addins &gt; Browse Addins… &gt; Keyboard Shortcuts… to assign keyboard shortcuts for this.
 
 ### Secure Get
 
@@ -134,7 +148,7 @@ With `const` it is possible to mark an existing variable as constant. If it is m
 my_const <- runif(5)
 const(my_const)
 g(my_const)
-#> [1] 0.5651927 0.6273441 0.9417289 0.2745959 0.3723574
+#> [1] 0.57192869 0.28610233 0.04922425 0.72894590 0.02065678
 my_const <- 1:5
 g(my_const)
 #> Error in g(my_const): Variable 'my_const' is not valid:
@@ -144,7 +158,7 @@ g(my_const)
 Built-in Types
 --------------
 
-Currently only "any", "numeric" and "character" are supported, the latter two only partially.
+Currently only “any”, “numeric” and “character” are supported, the latter two only partially.
 
 ToDo: describe the types with all their properties.
 
@@ -157,8 +171,8 @@ Registering Custom Types
 
 You can easily register a custom type. To do so you need three things:
 
--   a type name, e.g. "symmetric\_matrix". By using the name of a built-in type you can overload it *for all newly typed variables* -- already typed variables will keep their built-in type.
--   a function to check the validity of the additional properties passed to either declare or cast when creating a typed variable. This function must accept these additional properties as (named) parameters and it should throw an error if properties used are invalid. Afterwards, it must return -- as a (named) list -- the set of properties which should finally be stored. This set can be different from the original arguments to this function, e.g. because one of two inconsistent properties was removed. There is the helper function `args2list` in the package, which returns the *current* values of the arguments of the calling function as a list.
--   a quoted expression used to test the validity of a typed variable by e.g. `is.valid`, `%<-%` or `g`. This expression is evaluated in the environment of the variable to test and should hence (ideally) not create any (temporary) objects. Within this expression you must refer to the variable to test by `.XXX.` and the list of properties is available as `.lazyTyper_properties.` This expression should never fail but rather set the logical value `.lazyTyper_valid` to `FALSE` if the variable is invalid. In this case the "error"-attribute of the variable `.lazyTyper_valid` should contain the reason(s) for the invalidity as a character vector. The recommended way to set `lazyTyper_valid` to `FALSE` and to add a(nother) error message to it is by calling the helper function `setInvalidWError("This is pasted to ", "a single error message!")`.
+-   a type name, e.g. “symmetric\_matrix”. By using the name of a built-in type you can overload it *for all newly typed variables* – already typed variables will keep their built-in type.
+-   a function to check the validity of the additional properties passed to either declare or cast when creating a typed variable. This function must accept these additional properties as (named) parameters and it should throw an error if properties used are invalid. Afterwards, it must return – as a (named) list – the set of properties which should finally be stored. This set can be different from the original arguments to this function, e.g. because one of two inconsistent properties was removed. There is the helper function `args2list` in the package, which returns the *current* values of the arguments of the calling function as a list.
+-   a quoted expression used to test the validity of a typed variable by e.g. `is.valid`, `%<-%` or `g`. This expression is evaluated in the environment of the variable to test and should hence (ideally) not create any (temporary) objects. Within this expression you must refer to the variable to test by `.XXX.` and the list of properties is available as `.lazyTyper_properties.` This expression should never fail but rather set the logical value `.lazyTyper_valid` to `FALSE` if the variable is invalid. In this case the “error”-attribute of the variable `.lazyTyper_valid` should contain the reason(s) for the invalidity as a character vector. The recommended way to set `lazyTyper_valid` to `FALSE` and to add a(nother) error message to it is by calling the helper function `setInvalidWError("This is pasted to ", "a single error message!")`.
 
 ToDo: explain how to register custom types and overload built-in types.

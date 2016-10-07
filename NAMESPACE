@@ -2,6 +2,7 @@
 
 export("%<-%")
 export("%<-s%")
+export(.)
 export(args2list)
 export(cast)
 export(const)

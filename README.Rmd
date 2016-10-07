@@ -1,5 +1,7 @@
 ---
-output: github_document
+output: 
+  github_document: 
+    pandoc_args: ["--smart"]
 ---
 
 ```{r, echo = FALSE}
@@ -55,23 +57,23 @@ There are two different operators for typed assignment: `%<-s%` and `%<-%`. The
 former one is kind of more "secure", since the variable (apparently) is not
 modified if the assignment would violate its type or its properties.
 ```{r, error = TRUE}
-a %<-s% 1:3
-names(a) %<-% c("first", "second", "third")
-a[1] %<-s% 2
+a %<-s% .(1:3)
+names(a) %<-% .(c("first", "second", "third"))
+a[1] %<-s% .(2)
 
-a[4] %<-s% 4
+a[4] %<-s% .(4)
 a
 
-class(a) %<-s% "character"
+class(a) %<-s% .("character")
 a
 is.valid(a)
 ```
 
 `%<-%`, on the other hand, might leave the variable in an invalid state.
 ```{r, error = TRUE}
-b %<-% "Hello World!"
+b %<-% .("Hello World!")
 
-b %<-% 123
+b %<-% .(123)
 b
 is.valid(b)
 ```
@@ -92,9 +94,26 @@ myFancyFun(var) <- c(TRUE, NA, FALSE)
 It is almost always better to use the quicker and more memory friendly `%<-%`,
 except maybe when using R interactively.
 
+For both operators the right hand side must be enclosed in `.()`. This ensures
+that assignment expressions where the right hand side contains binary operators 
+like `+` or `&` are evaluated in correct or --- to be more precise --- expected
+order. The necessity for this arises from the high precedence of custom 
+operators like `%<-%` and `%<-s%`. Because of this,
+```{r, eval = FALSE}
+a %<-% 3 + 7
+```
+would actually be interpreted as
+```{r, eval = FALSE}
+(a %<-% 3) + 7,
+```
+which is probably not what we want. Of course, wrapping the right hand side in
+normal parentheses would generally solve this problem. However, there is no way
+to test for their presence or absence from within the operator functions, while
+this can be done for `.()`, which technically is a function call.
+
 #### RStudio Addins
-The package ships with addins for RStudio (>= v0.99.878) for quickly inserting 
-"%<-%" and "%<-s%". Go to Tools > Addins > Browse Addins... > Keyboard 
+The package ships with addins for RStudio (>= v0.99.1111) for quickly inserting 
+`%<-% .()` and `%<-s% .()`. Go to Tools > Addins > Browse Addins... > Keyboard 
 Shortcuts... to assign keyboard shortcuts for this.
 
 ### Secure Get

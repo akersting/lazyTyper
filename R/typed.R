@@ -61,7 +61,7 @@
 #'
 #' @examples
 #' declare(var, "character", length = 2)
-#' var %<-% letters[1:2]
+#' var %<-% .(letters[1:2])
 #'
 #' \dontrun{
 #' var %<-% c("a", "b", "c")  # error: wrong length}

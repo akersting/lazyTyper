@@ -88,7 +88,7 @@ Use \code{declare} to declare one or more non-existing variable in a
 }
 \examples{
 declare(var, "character", length = 2)
-var \%<-\% letters[1:2]
+var \%<-\% .(letters[1:2])
 
 \dontrun{
 var \%<-\% c("a", "b", "c")  # error: wrong length}
