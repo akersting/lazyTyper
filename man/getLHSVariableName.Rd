@@ -4,10 +4,14 @@
 \alias{getLHSVariableName}
 \title{Get Variable Name From Left-Hand Side of Assignment}
 \usage{
-getLHSVariableName(x)
+getLHSVariableName(x, allow_character = TRUE)
 }
 \arguments{
 \item{x}{the left-hand side of an assignment as a language object.}
+
+\item{allow_character}{a logical value indicating if \code{"abc"} or even
+\code{"123"} (but not \code{""}) are acceptable left-hand sides.
+\code{TRUE} mimics the behavior of the base assignment operator.}
 }
 \value{
 a character string.
