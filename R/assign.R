@@ -113,7 +113,7 @@ NULL
   cl <- sys.call()
 
   # rules out usage as 'what' in do.call() or 'FUN' in *apply()
-  if (!identical(cl[[1]], quote(`%<-%`)) || length(cl) != 3) {
+  if (!identical(cl[[1]], quote(`%<-s%`)) || length(cl) != 3) {
     stop("Invalid usage of typed assignment operator.")
   }
 
