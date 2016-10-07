@@ -34,16 +34,11 @@ g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {
     stop("No such object: ", varname)
   }
 
-  if (!existsInLazyTyperEnv(varname, env = this_env)) {
-    stop("Not a typed variable: ", varname)
-  }
-
-  x <- get(varname, envir = this_env, inherits = FALSE)
   valid <- checkType(varname, env = this_env)
 
   if (!valid) {
     stop("Variable '", varname, "' is not valid:\n", attr(valid, "error"))
   }
 
-  return(x)
+  get(varname, envir = this_env, inherits = FALSE)
 }
