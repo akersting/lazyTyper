@@ -91,19 +91,19 @@ NULL
          "expression wrapped in '.()'.")
   }
 
+  on.exit({
+    valid <- checkType(varname, env = parent.frame())
+
+    if (!valid) {
+      throwInvalidTypeError("Typed assignment failed for variable '", varname,
+                            "'. Reason:\n", attr(valid, "error"))
+    }
+  })
+
   # do the actual assignment
   cl[[1]] <- quote(`<-`)
   cl[3] <- cl[[3]][2]  # replace RHS of assignment with argument of .()
   eval(cl, envir = parent.frame())
-
-  valid <- checkType(varname, env = parent.frame())
-
-  if (!valid) {
-    stop("This assignment invalidated the variable '", varname,"'. Reason:\n",
-         attr(valid, "error"))
-  }
-
-  invisible(NULL)
 }
 
 #' @usage x \%<-s\% value
@@ -130,28 +130,32 @@ NULL
   if (!init) {
     eval(parse(text = paste0(".lazyTyper_backup <- ", varname)),
          envir = parent.frame())
-    on.exit(base::remove(list = ".lazyTyper_backup", envir = parent.frame()))
   }
+
+  on.exit({
+    valid <- checkType(varname, env = parent.frame())
+
+    if (!valid) {
+      # make sure we do not end of with an invalid x if the above assignment
+      # was the initialization of x
+      base::remove(list = varname, envir = parent.frame())
+      if (!init) {
+        # restore from backup
+        eval(parse(text = paste0(varname, " <- .lazyTyper_backup")),
+             envir = parent.frame())
+      }
+      throwInvalidTypeError("Typed assignment failed for variable '", varname,
+                            "'. Reason:\n", attr(valid, "error"))
+    }
+    if (!init) {
+      base::remove(list = ".lazyTyper_backup", envir = parent.frame())
+    }
+  })
 
   # the actual assignment
   cl[[1]] <- quote(`<-`)
   cl[3] <- cl[[3]][2]  # replace RHS of assignment with argument of .()
   eval(cl, envir = parent.frame())
-
-  valid <- checkType(varname, env = parent.frame())
-
-  if (!valid) {
-    # make sure we do not end of with an invalid x if the above assignment
-    # was the initialization of x
-    base::remove(list = varname, envir = parent.frame())
-    if (!init) {
-      # restore from backup
-      eval(parse(text = paste0(varname, " <- .lazyTyper_backup")),
-           envir = parent.frame())
-    }
-    throwInvalidTypeError("Typed assignment failed for variable '", varname,
-                          "'. Reason:\n", attr(valid, "error"))
-  }
 }
 
 #' @rdname typedAssignOps
