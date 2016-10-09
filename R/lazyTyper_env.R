@@ -1,29 +1,30 @@
-# lazyTyper stores the type information in the environment '.lazyTyper_env'
-# underneath the environment of the respective object; this file contains helper
-# functions for managing these environments
+# lazyTyper stores the type information in the environment 'lazyTyper_env' as an
+# attribute to the environment of the respective object; this file contains
+# helper functions for managing these environments
 
 existsInLazyTyperEnv <- function(x, env) {
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE,
-                        ifnotfound = emptyenv())
-  if (exists(x, envir = lazyTyper_env)) {
-    TRUE
-  } else {
+  lazyTyper_env <- attr(env, "lazyTyper_env", exact = TRUE)
+  if (is.null(lazyTyper_env)) {
     FALSE
+  } else {
+    exists(x, envir = lazyTyper_env)
   }
 }
 
 getFromLazyTyperEnv <- function(x, env) {
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE,
-                       ifnotfound = emptyenv())
-  get0(x, envir = lazyTyper_env, inherits = FALSE, ifnotfound = NULL)
+  lazyTyper_env <- attr(env, "lazyTyper_env", exact = TRUE)
+  if (is.null(lazyTyper_env)) {
+    NULL
+  } else {
+    get0(x, envir = lazyTyper_env, inherits = FALSE, ifnotfound = NULL)
+  }
 }
 
 assignToLazyTyperEnv <- function(x, type, properties, env) {
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE)
+  lazyTyper_env <- attr(env, "lazyTyper_env", exact = TRUE)
   if (is.null(lazyTyper_env)) {
-    assign(".lazyTyper_env", new.env(parent = emptyenv()), envir = env)
+    lazyTyper_env <- attr(env, "lazyTyper_env") <- new.env(parent = emptyenv())
   }
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env)
 
   properties <- checkProperties(type, properties)
 
@@ -36,7 +37,7 @@ assignToLazyTyperEnv <- function(x, type, properties, env) {
 }
 
 removeFromLazyTyperEnv <- function(x, env) {
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE)
+  lazyTyper_env <- attr(env, "lazyTyper_env", exact = TRUE)
   if (!is.null(lazyTyper_env)) {
     if (existsInLazyTyperEnv(x, env)) {
       base::remove(list = x, envir = lazyTyper_env)
