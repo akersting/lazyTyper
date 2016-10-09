@@ -98,34 +98,19 @@ checkPropertiesFun.numeric <- function(length, min_length, max_length, set, min,
   args2list()
 }
 
-# nocov start
-check_type_expr.numeric  <- quote({
-  if (!is.numeric(.XXX.)) {
-    lazyTyper::markInvalidWError("wrong type: ", typeof(.XXX.))
+checkTypeFun.numeric <- function(x, length, min_length, max_length, set, min,
+                                 max, allow_NA, allow_NaN) {
+  if (!is.numeric(x)) {
+    markInvalidWError("wrong type: ", typeof(x))
   } else {
-    if (!is.null(.lazyTyper_properties[["length"]]) &&
-        length(.XXX.) != .lazyTyper_properties[["length"]]) {
-      lazyTyper::markInvalidWError("wrong length: expected ",
-               .lazyTyper_properties[["length"]], ", actual ", length(.XXX.))
-    }
-    if (!is.null(.lazyTyper_properties[["min_length"]]) &&
-        length(.XXX.) < .lazyTyper_properties[["min_length"]]) {
-      lazyTyper::markInvalidWError("wrong length: length expected to be min",
-               .lazyTyper_properties[["min_length"]],
-               ", actual ", length(.XXX.))
-    }
-    if (!is.null(.lazyTyper_properties[["max_length"]]) &&
-        length(.XXX.) > .lazyTyper_properties[["max_length"]]) {
-      lazyTyper::markInvalidWError("wrong length: length expected to be max",
-                                   .lazyTyper_properties[["max_length"]],
-                                   ", actual ", length(.XXX.))
+    if (!missing(length) && base::length(x) != length) {
+      markInvalidWError("wrong length: expected ", length, ", actual ",
+                        base::length(x))
     }
 
-    if (!is.null(.lazyTyper_properties[["set"]]) &&
-        any(!.XXX. %in% .lazyTyper_properties[["set"]])) {
-      lazyTyper::markInvalidWError("invalid values: ",
-               .XXX.[!.XXX. %in% .lazyTyper_properties[["set"]]])
+    if (!missing(min_length) && base::length(x) < min_length) {
+      markInvalidWError("wrong length: length expected to be min",
+                        min_length, ", actual ", base::length(x))
     }
   }
-})
-# nocov end
+}

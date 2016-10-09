@@ -1,17 +1,17 @@
 context("register")
 
 test_that("custom times can be registered", {
-  check_type_expr <- quote({
-    if (!is.logical(.XXX.)) {
+  checkTypeFun <- function(x) {
+    if (!is.logical(x)) {
       markInvalidWError("not logical")
     }
-  })
+  }
 
   checkPropertiesFun <- function() {
     args2list()
   }
 
-  registerCustomType("log", checkPropertiesFun, check_type_expr)
+  registerCustomType("log", checkPropertiesFun, checkTypeFun)
   declare(a, "log")
   expect_error(declare(b, "log", foo = bar))
   expect_error(a %<-% .(1))

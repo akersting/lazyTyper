@@ -6,10 +6,10 @@
   custom_types <- new.env(parent = emptyenv())
   assign("custom_types", custom_types, envir = getNamespace("lazyTyper"))
 
-  registerType("any", checkPropertiesFun.any, check_type_expr.any)
-  registerType("const", checkPropertiesFun.const, check_type_expr.const)
-  registerType("numeric", checkPropertiesFun.numeric, check_type_expr.numeric)
+  registerType("any", checkPropertiesFun.any, checkTypeFun.any)
+  registerType("const", checkPropertiesFun.const, checkTypeFun.const)
+  registerType("numeric", checkPropertiesFun.numeric, checkTypeFun.numeric)
   registerType("character", checkPropertiesFun.character,
-               check_type_expr.character)
+              checkTypeFun.character)
 }
 # nocov end

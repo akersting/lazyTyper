@@ -1,31 +1,12 @@
 # !diagnostics suppress=types, custom_types
-getPathsToVariable <- function(x, varname = ".XXX.", paths = list(),
-                               current = integer()) {
-  if (is.name(x) && as.character(x) == varname) {
-    paths[[length(paths) + 1]] <- current
-    return(paths)
-  } else if (is.call(x) || is.pairlist(x)) {
-    paths <- unlist(lapply(seq_along(x), function(i) {
-      getPathsToVariable(x[[i]], varname = varname, paths = paths,
-                           current = c(current, i))
-    }), recursive = FALSE)
-    return(paths)
-  } else {
-    return(NULL)
-  }
-}
-
-registerType <- function(type, checkPropertiesFun, check_type_expr,
-                         varname = ".XXX.", env = types) {
+registerType <- function(type, checkPropertiesFun, checkTypeFun,
+                         env = types) {
   stopifnot(is.character(type), length(type) == 1)
   stopifnot(is.function(checkPropertiesFun))
-  stopifnot(is.language(check_type_expr))
-  stopifnot(is.character(varname), length(varname) == 1)
+  stopifnot(is.function(checkTypeFun))
 
   assign(type, list(checkPropertiesFun = checkPropertiesFun,
-                    check_type_expr = check_type_expr,
-                    check_type_expr_paths =
-                      getPathsToVariable(check_type_expr, varname)),
+                    checkTypeFun = checkTypeFun),
          envir = env)
 }
 
@@ -41,31 +22,16 @@ registerType <- function(type, checkPropertiesFun, check_type_expr,
 #'  this function, e.g. because one of two inconsistent properties was removed.
 #'  There is the helper function \code{\link{args2list}}, which returns the
 #'  *current* values of the arguments of the calling function as a list.
-#'@param check_type_expr a quoted expression to be used for checking whether a
-#'  variable is of type \code{type}. Within this expression, refer to the
-#'  variable to check by what is specified in the \code{varname}-argument (as a
-#'  name, i.e. without the quotes). The default is \code{.XXX.}. The list of
-#'  additional properties is available as \code{.lazyTyper_properties}.
-#'
-#'  This expression should never fail, i.e. throw an error. To indicate that the
-#'  variable under consideration is not of type \code{type}, the logical
-#'  variable \code{.lazyTyper_valid} should be set to \code{FALSE}. In addition,
-#'  the attribute "error" of \code{.lazyTyper_valid} (a character vector),
-#'  should describe the reason(s) why the variable is invalid. The preferred way
-#'  to both set \code{.lazyTyper_valid} to \code{FALSE} and to add an
-#'  (additional) message to its attribute "error", is to call
-#'  \code{markInvalidWError}.
-#'@param varname a character string with the name of the placeholder-variable
-#'  used in \code{check_type_expr} to be replaced with the actual variable to
-#'  validate.
+#'@param checkTypeFun a function used for checking whether a variable is of type
+#'  \code{type}. This function must accept \code{x}, which is the variable to
+#'  test, as well as all the additional properties supported by this type as
+#'  (named) parameters.
 #'
 #'@seealso useful helper functions: \code{\link{markInvalidWError}},
 #'  \code{\link{args2list}}, \code{\link{hasValue}}
 #'
 #'@export
-registerCustomType <- function(type, checkPropertiesFun, check_type_expr,
-                               varname = ".XXX.") {
+registerCustomType <- function(type, checkPropertiesFun, checkTypeFun) {
   registerType(type = type, checkPropertiesFun = checkPropertiesFun,
-               check_type_expr = check_type_expr, varname = varname,
-               env = custom_types)
+               checkTypeFun = checkTypeFun, env = custom_types)
 }

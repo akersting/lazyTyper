@@ -78,31 +78,19 @@ checkPropertiesFun.character <- function(length, min_length, max_length, set,
   args2list()
 }
 
-# nocov start
-check_type_expr.character <- quote({
-
-  if (!is.character(.XXX.)) {
-    valid <- FALSE
-    markInvalidWError("Wrong type: ", typeof(.XXX.))
+checkTypeFun.character <- function(x, length, min_length, max_length, set,
+                                   pattern, allow_NA) {
+  if (!is.character(x)) {
+    markInvalidWError("Wrong type: ", typeof(x))
   } else {
-    if (!is.null(.lazyTyper_properties[["length"]]) &&
-        length(.XXX.) != .lazyTyper_properties[["length"]]) {
-      markInvalidWError("Wrong length: expected ",
-                        .lazyTyper_properties[["length"]], ", actual ",
-                        length(x))
+    if (!missing(length) && base::length(x) != length) {
+      markInvalidWError("wrong length: expected ", length, ", actual ",
+                        base::length(x))
     }
 
-    if (!is.null(.lazyTyper_properties[["set"]])) {
-      if (!all(.XXX. %in% .lazyTyper_properties[["set"]])) {
-        markInvalidWError("Not all elements are in the expected set: ",
-                          .lazyTyper_properties[["set"]])
-      }
-    } else if (!is.null(.lazyTyper_properties[["pattern"]]) &&
-               length(grep(.lazyTyper_properties[["pattern"]], .XXX.)) !=
-               length(.XXX.)) {
-      markInvalidWError("Not all elements match the expected pattern: ",
-                        .lazyTyper_properties[["pattern"]])
+    if (!missing(min_length) && base::length(x) < min_length) {
+      markInvalidWError("wrong length: length expected to be min",
+                        min_length, ", actual ", base::length(x))
     }
   }
-})
-# nocov end
+}

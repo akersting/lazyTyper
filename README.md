@@ -91,7 +91,7 @@ is.valid(a)
 b %<-% .("Hello World!")
 
 b %<-% .(123)
-#> Error in b %<-% .(123): This assignment invalidated the variable 'b'. Reason:
+#> Error in b %<-% .(123): Typed assignment failed for variable 'b'. Reason:
 #> Wrong type: double
 b
 #> [1] 123
@@ -145,10 +145,11 @@ For example in tight for-loops one might want to deliberately use the base assig
 With `const` it is possible to mark an existing variable as constant. If it is modified afterwards, accessing it through `g` will fail.
 
 ``` r
+set.seed(123)
 my_const <- runif(5)
 const(my_const)
 g(my_const)
-#> [1] 0.57192869 0.28610233 0.04922425 0.72894590 0.02065678
+#> [1] 0.2875775 0.7883051 0.4089769 0.8830174 0.9404673
 my_const <- 1:5
 g(my_const)
 #> Error in g(my_const): Variable 'my_const' is not valid:
@@ -162,17 +163,7 @@ Currently only “any”, “numeric” and “character” are supported, the l
 
 ToDo: describe the types with all their properties.
 
-### Additional Properties, Reference Counting and Copying
-
-ToDo: detail why checking certain properties will lead to a copy the next time the variable is modified.
-
 Registering Custom Types
 ------------------------
-
-You can easily register a custom type. To do so you need three things:
-
--   a type name, e.g. “symmetric\_matrix”. By using the name of a built-in type you can overload it *for all newly typed variables* – already typed variables will keep their built-in type.
--   a function to check the validity of the additional properties passed to either declare or cast when creating a typed variable. This function must accept these additional properties as (named) parameters and it should throw an error if properties used are invalid. Afterwards, it must return – as a (named) list – the set of properties which should finally be stored. This set can be different from the original arguments to this function, e.g. because one of two inconsistent properties was removed. There is the helper function `args2list` in the package, which returns the *current* values of the arguments of the calling function as a list.
--   a quoted expression used to test the validity of a typed variable by e.g. `is.valid`, `%<-%` or `g`. This expression is evaluated in the environment of the variable to test and should hence (ideally) not create any (temporary) objects. Within this expression you must refer to the variable to test by `.XXX.` and the list of properties is available as `.lazyTyper_properties.` This expression should never fail but rather set the logical value `.lazyTyper_valid` to `FALSE` if the variable is invalid. In this case the “error”-attribute of the variable `.lazyTyper_valid` should contain the reason(s) for the invalidity as a character vector. The recommended way to set `lazyTyper_valid` to `FALSE` and to add a(nother) error message to it is by calling the helper function `setInvalidWError("This is pasted to ", "a single error message!")`.
 
 ToDo: explain how to register custom types and overload built-in types.

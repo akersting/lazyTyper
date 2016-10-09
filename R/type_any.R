@@ -14,4 +14,4 @@ checkPropertiesFun.any <- function() {
   args2list()
 }
 
-check_type_expr.any <- quote({})
+checkTypeFun.any <- function(x) {}

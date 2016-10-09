@@ -4,8 +4,7 @@
 \alias{registerCustomType}
 \title{Register Custom Types}
 \usage{
-registerCustomType(type, checkPropertiesFun, check_type_expr,
-  varname = ".XXX.")
+registerCustomType(type, checkPropertiesFun, checkTypeFun)
 }
 \arguments{
 \item{type}{a character string with the name of the type to register.}
@@ -20,24 +19,10 @@ this function, e.g. because one of two inconsistent properties was removed.
 There is the helper function \code{\link{args2list}}, which returns the
 *current* values of the arguments of the calling function as a list.}
 
-\item{check_type_expr}{a quoted expression to be used for checking whether a
- variable is of type \code{type}. Within this expression, refer to the
- variable to check by what is specified in the \code{varname}-argument (as a
- name, i.e. without the quotes). The default is \code{.XXX.}. The list of
- additional properties is available as \code{.lazyTyper_properties}.
-
- This expression should never fail, i.e. throw an error. To indicate that the
- variable under consideration is not of type \code{type}, the logical
- variable \code{.lazyTyper_valid} should be set to \code{FALSE}. In addition,
- the attribute "error" of \code{.lazyTyper_valid} (a character vector),
- should describe the reason(s) why the variable is invalid. The preferred way
- to both set \code{.lazyTyper_valid} to \code{FALSE} and to add an
- (additional) message to its attribute "error", is to call
- \code{markInvalidWError}.}
-
-\item{varname}{a character string with the name of the placeholder-variable
-used in \code{check_type_expr} to be replaced with the actual variable to
-validate.}
+\item{checkTypeFun}{a function used for checking whether a variable is of type
+\code{type}. This function must accept \code{x}, which is the variable to
+test, as well as all the additional properties supported by this type as
+(named) parameters.}
 }
 \description{
 Register Custom Types

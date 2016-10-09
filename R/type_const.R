@@ -4,8 +4,8 @@ checkPropertiesFun.const <- function(value) {
   args2list()
 }
 
-check_type_expr.const <- quote({
-  if (!identical(.XXX., .lazyTyper_properties[["value"]])) {
+checkTypeFun.const <- function(x, value) {
+  if (!identical(x, value)) {
     markInvalidWError("Modified constant.")
   }
-})
+}

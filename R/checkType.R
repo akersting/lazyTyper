@@ -3,12 +3,14 @@ checkType <- function(varname, env) {
   lazyTyperList <- getFromLazyTyperEnv(varname, env)
 
   if (!is.null(lazyTyperList)) {
-    assign(".lazyTyper_properties", lazyTyperList[["properties"]], envir = env)
-    assign(".lazyTyper_valid", TRUE, envir = env)
+    named <- getNamed(varname, env)
+    on.exit(setNamed(varname, env, named))
 
-    eval(lazyTyperList[["check_type_expr"]], envir = env)
-
-    get(".lazyTyper_valid", envir = env)
+    valid <- TRUE
+    do.call(lazyTyperList[["checkTypeFun"]],
+            c(x = list(get(varname, envir = env, inherits = FALSE)),
+              lazyTyperList[["properties"]]))
+    valid
   } else {
     valid <- FALSE
     attr(valid, "error") <- "not a typed variable"
@@ -16,29 +18,21 @@ checkType <- function(varname, env) {
   }
 }
 
-getCheckTypeExpr <- function(type, varname) {
+getCheckTypeFun <- function(type) {
 
-  check_type_expr <- get0(type, envir = custom_types,
-                          ifnotfound = NULL)[["check_type_expr"]]
-  if (is.null(check_type_expr)) {
-    check_type_expr <- get0(type, envir = types,
-                            ifnotfound = NULL)[["check_type_expr"]]
-    if (is.null(check_type_expr)) {
+  checkTypeFun <- get0(type, envir = custom_types,
+                          ifnotfound = NULL)[["checkTypeFun"]]
+  if (is.null(checkTypeFun)) {
+    checkTypeFun <- get0(type, envir = types,
+                            ifnotfound = NULL)[["checkTypeFun"]]
+    if (is.null(checkTypeFun)) {
+      # we should actually never end here since getCheckPropertiesFun() is
+      # always called first
       stop("Neither a built-in nor a registered custom type: ", type)
-    } else {
-      check_type_expr_paths <- get(type, envir = types,
-                                   inherits = FALSE)[["check_type_expr_paths"]]
     }
-  } else {
-    check_type_expr_paths <- get(type, envir = custom_types,
-                                 inherits = FALSE)[["check_type_expr_paths"]]
   }
 
-  for (path in check_type_expr_paths) {
-    check_type_expr[[path]] <- as.name(varname)
-  }
-
-  check_type_expr
+  checkTypeFun
 }
 
 #' Mark the Variable Currently Under Validation as Invalid
@@ -50,12 +44,12 @@ getCheckTypeExpr <- function(type, varname) {
 #' @keywords internal
 #' @export
 markInvalidWError <- function(...) {
-  valid <- get(".lazyTyper_valid", envir = parent.frame())
+  valid <- get("valid", envir = parent.frame(2))
 
   msg <- paste0(...)
 
   valid[1] <- FALSE
   attr(valid, "error") <- c(attr(valid, "error"), msg)
 
-  assign(".lazyTyper_valid", valid, envir = parent.frame())
+  assign("valid", valid, envir = parent.frame(2))
 }
