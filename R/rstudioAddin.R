@@ -24,4 +24,9 @@ insertSecureTypedAssignWOSpaceAddin <- function() {
   rstudioapi::insertText("%<-s% .()")
   shiftCursorInLine(-1)
 }
+
+insertScopeAddin <- function() {
+  rstudioapi::insertText("SCOPE %->% {}")
+  shiftCursorInLine(-1)
+}
 # nocov end

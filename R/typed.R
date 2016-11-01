@@ -141,6 +141,16 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
     assignToLazyTyperEnv(varname, type = type, properties = list(...),
                          env = env)
   }
+
+  # marks vars for removal if we are in SCOPE
+  if (sys.nframe() >= 3) {
+    scope_frame <- sys.frame(-3)
+    scope <- attr(scope_frame, "lazyTyper_scope", exact = TRUE)
+    if (!is.null(scope) && identical(env, parent.frame())) {
+      attr(scope_frame, "lazyTyper_vars2remove") <-
+        c(attr(scope_frame, "lazyTyper_vars2remove"), varnames)
+    }
+  }
 }
 
 #' @rdname typed
