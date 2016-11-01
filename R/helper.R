@@ -11,11 +11,12 @@
 #'
 #' @seealso \code{\link[base]{exists}}, which returns \code{TRUE} also for
 #'   missing arguments and \code{\link[base]{missing}}, which returns
-#'   \code{FALSE} also for missing arguments which have a default value.
+#'   \code{TRUE} also for missing arguments which have a default value.
 #'
 #' @keywords internal
 #' @export
 hasValue <- function(x, envir = parent.frame()) {
+  # substitute (used below) behaves differently in the global environment
   if (identical(envir, .GlobalEnv)) {
     stop("'hasValue' cannot be used to test objects in the global environment.")
   }
@@ -25,6 +26,7 @@ hasValue <- function(x, envir = parent.frame()) {
     return(FALSE)
   }
 
+  # `` in case x does not contain a proper name
   expr <- paste0("!identical(substitute(`", x, "`), quote(expr = ))")
   expr <- parse(text = expr)
   eval(expr, envir = envir)

@@ -21,7 +21,7 @@ Otherwise it returns \code{TRUE}.
 \seealso{
 \code{\link[base]{exists}}, which returns \code{TRUE} also for
   missing arguments and \code{\link[base]{missing}}, which returns
-  \code{FALSE} also for missing arguments which have a default value.
+  \code{TRUE} also for missing arguments which have a default value.
 }
 \keyword{internal}
 
