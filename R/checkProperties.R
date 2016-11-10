@@ -5,8 +5,12 @@ checkProperties <- function(type, properties) {
   return(do.call(checkPropertiesFun, properties))
 }
 
-getCheckPropertiesFun <- function(type) {
+getCheckPropertiesFun <- function(type, find_hidden = FALSE) {
   stopifnot(is.character(type), length(type) == 1)
+
+  if (!find_hidden && substr(type, 1, 1) == ".") {
+    stop("Neither a built-in nor a registered custom type: ", type)
+  }
 
   checkPropertiesFun <-
     get0(type, envir = custom_types)[["checkPropertiesFun"]]
