@@ -43,3 +43,8 @@ test_that("assign returns the RHS", {
   expect_equal(a %<-s% .(c(4,5,6)), c(4,5,6))
   expect_equal(a[2:3] %<-s% .(c(8,9)), c(8,9))
 })
+
+test_that("assign works correctly if RHS involves sys.nframe()", {
+  declare(a, "numeric")
+  expect_equal(a %<-% .(sys.nframe() + 1), sys.nframe() + 1)
+})

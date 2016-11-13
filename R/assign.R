@@ -101,9 +101,7 @@ NULL
   })
 
   # do the actual assignment
-  cl[[1]] <- quote(`<-`)
-  cl[3] <- cl[[3]][2]  # replace RHS of assignment with argument of .()
-  eval(cl, envir = parent.frame())
+  eval(call2assignment(cl, parent.frame()), envir = parent.frame())
 }
 
 #' @usage x \%<-s\% value
@@ -152,10 +150,8 @@ NULL
     }
   })
 
-  # the actual assignment
-  cl[[1]] <- quote(`<-`)
-  cl[3] <- cl[[3]][2]  # replace RHS of assignment with argument of .()
-  eval(cl, envir = parent.frame())
+  # do the actual assignment
+  eval(call2assignment(cl, parent.frame()), envir = parent.frame())
 }
 
 #' @rdname typedAssignOps
@@ -163,4 +159,20 @@ NULL
 . <- function(rhs) {
   stop("This function must only be used as the right hand side of a typed ",
        "assignment.")
+}
+
+# convert a call of the form x %<-% .(rhs) or x %<-s% .(rhs) to x <- rhs_value,
+# where rhs_value is obtained by evaluating a promise to rhs in eval.env; this
+# is used to ensures correct results if rhs is an expression involving
+# "Functions to Access the Function Call Stack" (e.g. sys.nframe())
+call2assignment <- function(cl, eval.env) {
+  cl[[1]] <- quote(`<-`)
+
+  rhs <- cl[[3]][[2]]  # RHS is wrapped in .()
+  envir <- environment()
+  eval(bquote(delayedAssign("rhs", value = .(rhs), eval.env = eval.env,
+                            assign.env = envir)))  # .() here is bquote syntax
+
+  cl[3] <- list(rhs)  # list() since RHS could be NULL
+  cl
 }
