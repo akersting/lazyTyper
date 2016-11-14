@@ -25,5 +25,6 @@ Suggests: testthat,
     rstudioapi,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    digest
 Imports: compiler

@@ -13,7 +13,8 @@
 cast(x, type, ..., env = parent.frame(), inherits = TRUE,
   .character = FALSE)
 
-const(x, env = parent.frame(), inherits = TRUE, .character = FALSE)
+const(x, hash = FALSE, env = parent.frame(), inherits = TRUE,
+  .character = FALSE)
 
 declare(x, type, ..., env = parent.frame(), .character = FALSE)
 
@@ -41,6 +42,9 @@ environment should be inspected.}
 \item{.character}{a logical value indicating if \code{x} is the object to
 operate on or a character vector with the names of objects to operate on.
 \code{cast} always only operates on a single object.}
+
+\item{hash}{logical. Should hashing be used to detect if a constant was
+modified?}
 }
 \value{
 For \code{untype} an invisible character vector with the names of the

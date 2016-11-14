@@ -109,15 +109,15 @@ cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
 
 #' @rdname typed
 #' @export
-const <- function(x, env = parent.frame(), inherits = TRUE,
+const <- function(x, hash = FALSE, env = parent.frame(), inherits = TRUE,
                   .character = FALSE) {
   varname <- getVarNames(x, sx = substitute(x), .character = .character)
   if (length(varname) != 1) {
     stop("If '.character = TRUE', 'x' must be a character string, i.e. a ",
          "character vector of length 1.")
   }
-  cast(varname, type = "const", value = x, env = env, inherits = inherits,
-       .character = TRUE)
+  cast(varname, type = "const", value = x, hash = hash, env = env,
+       inherits = inherits, .character = TRUE)
 }
 
 #' @rdname typed
