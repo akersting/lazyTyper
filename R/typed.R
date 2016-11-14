@@ -143,8 +143,8 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
   }
 
   # marks vars for removal if we are in SCOPE
-  if (sys.nframe() >= 3) {
-    scope_frame <- sys.frame(-3)
+  if (sys.nframe() >= 2) {
+    scope_frame <- sys.frame(-1)
     scope <- attr(scope_frame, "lazyTyper_scope", exact = TRUE)
     if (!is.null(scope) && identical(env, parent.frame())) {
       attr(scope_frame, "lazyTyper_vars2remove") <-

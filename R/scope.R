@@ -47,7 +47,8 @@ NULL
     suppressWarnings(base::remove(list = attr(env, "lazyTyper_vars2remove"),
                             envir = parent.frame()))
   })
-  eval(substitute(expr), envir = parent.frame())
+
+  expr
 }
 
 #' @rdname SCOPE
