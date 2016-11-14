@@ -166,6 +166,19 @@ untype <- function(x, env = parent.frame(), inherits = FALSE,
       this_env <- env
     }
     removeFromLazyTyperEnv(varname, env = this_env)
+
+    # remove variable from vars2remove of SCOPE
+    for (i in rev(seq_len(sys.nframe() - 1))) {
+      scope_frame <- sys.frame(i)
+      scope <- attr(scope_frame, "lazyTyper_scope", exact = TRUE)
+      if (!is.null(scope) && identical(this_env, sys.frame(sys.parents()[i]))) {
+        attr(scope_frame, "lazyTyper_vars2remove") <-
+          attr(scope_frame, "lazyTyper_vars2remove")[
+            attr(scope_frame, "lazyTyper_vars2remove") != varname
+          ]
+        break
+      }
+    }
   }
 
   return(invisible(varnames))

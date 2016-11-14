@@ -42,10 +42,12 @@ NULL
   attr(env, "lazyTyper_scope") <- TRUE
   attr(env, "lazyTyper_vars2remove") <- character()
   on.exit({
-    untype(attr(env, "lazyTyper_vars2remove"), env = parent.frame(),
-           .character = TRUE)
+    # remove must come before untype since the latter removes vars from
+    # vars2remove
     suppressWarnings(base::remove(list = attr(env, "lazyTyper_vars2remove"),
                             envir = parent.frame()))
+    suppressWarnings(untype(attr(env, "lazyTyper_vars2remove"),
+                            env = parent.frame(), .character = TRUE))
   })
 
   expr
