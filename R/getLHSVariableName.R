@@ -22,7 +22,8 @@ getLHSVariableName <- function(x, allow_character = TRUE) {
   } else if (is.call(x) && length(x) > 1 && is.name(x[[2]])) {
     return(as.character(x[[2]]))
   } else if (is.call(x) && (identical(x[[1]], quote(`[`)) ||
-                            identical(x[[1]], quote(`[[`)))) {
+                            identical(x[[1]], quote(`[[`)) ||
+                            identical(x[[1]], quote(`$`)))) {
     return(getLHSVariableName(x[[2]], allow_character = FALSE))
   } else if (allow_character && is.character(x) && nchar(x) > 0) {
     return(x)
