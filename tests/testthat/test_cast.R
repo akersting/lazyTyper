@@ -1,7 +1,7 @@
 context("cast")
 
 test_that("cast fails for non-existing object", {
-  expect_error(cast(a, "numeric"), "does not exist")
+  expect_error(cast(a, "numeric"), "No such object.")
 })
 
 test_that("cast fails for already typed object", {

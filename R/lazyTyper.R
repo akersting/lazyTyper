@@ -2,4 +2,5 @@
 #'
 #' @docType package
 #' @name lazyTyper
+#' @import conditionR
 NULL

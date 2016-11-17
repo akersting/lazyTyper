@@ -12,9 +12,8 @@ getEnvOfObject(x, env)
 \item{env}{the environment where to start the search.}
 }
 \value{
-the first environment along the search path where an object with the
-  name \code{x} is defined, or the empty environment if the search is not
-  successful.
+the first environment found where an object with the name \code{x} is
+  defined, or the empty environment if the search is not successful.
 }
 \description{
 This recursive function returns the environment where the object with a

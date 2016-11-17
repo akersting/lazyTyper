@@ -8,9 +8,8 @@
 #' @param x the name of the object to find as a character string.
 #' @param env the environment where to start the search.
 #'
-#' @return the first environment along the search path where an object with the
-#'   name \code{x} is defined, or the empty environment if the search is not
-#'   successful.
+#' @return the first environment found where an object with the name \code{x} is
+#'   defined, or the empty environment if the search is not successful.
 #'
 #' @keywords internal
 getEnvOfObject <- function(x, env) {

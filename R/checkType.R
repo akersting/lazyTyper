@@ -6,15 +6,18 @@ checkType <- function(varname, env) {
     named <- getNamed(varname, env)
     on.exit(setNamed(varname, env, named))
 
-    valid <- TRUE
+    conditionR::setErrorContext("invalidTypeError",
+                                base_class = "lazyTyperError")
+
     do.call(lazyTyperList[["checkTypeFun"]],
             c(x = list(get(varname, envir = env, inherits = FALSE)),
               lazyTyperList[["properties"]]))
-    valid
   } else {
-    valid <- FALSE
-    attr(valid, "error") <- "not a typed variable"
-    valid
+    conditionR::signal(
+      conditionR::stackError("This is not a typed variable.",
+                             "notTypedError",
+                             base_class = "lazyTyperError")
+    )
   }
 }
 
@@ -33,23 +36,4 @@ getCheckTypeFun <- function(type) {
   }
 
   checkTypeFun
-}
-
-#' Mark the Variable Currently Under Validation as Invalid
-#'
-#' @param ... one or more character strings to be pasted together to an error
-#'   message (without a separator), which describes why a variable is not of the
-#'   declared type.
-#'
-#' @keywords internal
-#' @export
-markInvalidWError <- function(...) {
-  valid <- get("valid", envir = parent.frame(2))
-
-  msg <- paste0(...)
-
-  valid[1] <- FALSE
-  attr(valid, "error") <- c(attr(valid, "error"), msg)
-
-  assign("valid", valid, envir = parent.frame(2))
 }

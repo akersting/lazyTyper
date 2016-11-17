@@ -80,7 +80,9 @@ NULL
   cl <- sys.call()
 
   # rules out usage as 'what' in do.call() or 'FUN' in *apply()
-  if (!identical(cl[[1]], quote(`%<-%`)) || length(cl) != 3) {
+  if (!(identical(cl[[1]], quote(`%<-%`)) ||
+        identical(cl[[1]], quote(lazyTyper::`%<-%`)) ||
+        identical(cl[[1]], quote(lazyTyper:::`%<-%`))) || length(cl) != 3) {
     stop("Invalid usage of typed assignment operator.")
   }
 
@@ -91,17 +93,22 @@ NULL
          "expression wrapped in '.()'.")
   }
 
-  on.exit({
-    valid <- checkType(varname, env = parent.frame())
-
-    if (!valid) {
-      throwInvalidTypeError("Typed assignment failed for variable '", varname,
-                            "'. Reason:\n", attr(valid, "error"))
-    }
-  })
-
   # do the actual assignment
-  eval(call2assignment(cl, parent.frame()), envir = parent.frame())
+  rhs_value <- eval(call2assignment(cl, parent.frame()), envir = parent.frame())
+
+  # do the type checking
+  conditionR::setErrorContext(
+    "typedAssignmentError",
+    c(
+      notTypedError = paste0("Cannot check type of variable '",
+                             varname, "' after assignment."),
+      invalidTypeError = paste0("This assignment invalidated the variable '",
+                                varname, "'.")
+    ), base_class = "lazyTyperError"
+  )
+  checkType(varname, env = parent.frame())
+
+  invisible(rhs_value)
 }
 
 #' @usage x \%<-s\% value
@@ -109,9 +116,12 @@ NULL
 #' @export
 `%<-s%` <- function(x, value) {
   cl <- sys.call()
+  parent_frame <- parent.frame()
 
   # rules out usage as 'what' in do.call() or 'FUN' in *apply()
-  if (!identical(cl[[1]], quote(`%<-s%`)) || length(cl) != 3) {
+  if (!(identical(cl[[1]], quote(`%<-s%`)) ||
+        identical(cl[[1]], quote(lazyTyper::`%<-s%`)) ||
+        identical(cl[[1]], quote(lazyTyper:::`%<-s%`))) || length(cl) != 3) {
     stop("Invalid usage of typed assignment operator.")
   }
 
@@ -124,34 +134,38 @@ NULL
 
   # make a backup of the current value of x if this assignment is not the
   # initialization of x
-  init <- !exists(varname, envir = parent.frame(), inherits = FALSE)
+  init <- !exists(varname, envir = parent_frame, inherits = FALSE)
   if (!init) {
-    eval(parse(text = paste0(".lazyTyper_backup <- ", varname)),
-         envir = parent.frame())
+    backup <- get(varname, envir = parent_frame)
   }
 
-  on.exit({
-    valid <- checkType(varname, env = parent.frame())
+  # do the actual assignment
+  rhs_value <- eval(call2assignment(cl, parent.frame()), envir = parent.frame())
 
-    if (!valid) {
+  # do the type checking
+  conditionR::setErrorContext(
+    "typedAssignmentError",
+    c(
+      notTypedError = paste0("This assignment is invalid."),
+      invalidTypeError = paste0("This assignment would invalidate the ",
+                                "variable '", varname, "'.")
+    ), base_class = "lazyTyperError"
+  )
+
+  withCallingHandlers(
+    checkType(varname, env = parent_frame),
+    lazyTyperError = function(e) {
       # make sure we do not end of with an invalid x if the above assignment
       # was the initialization of x
-      base::remove(list = varname, envir = parent.frame())
+      base::remove(list = varname, envir = parent_frame)
       if (!init) {
         # restore from backup
-        eval(parse(text = paste0(varname, " <- .lazyTyper_backup")),
-             envir = parent.frame())
+        assign(varname, backup, envir = parent_frame)
       }
-      throwInvalidTypeError("Typed assignment failed for variable '", varname,
-                            "'. Reason:\n", attr(valid, "error"))
     }
-    if (!init) {
-      base::remove(list = ".lazyTyper_backup", envir = parent.frame())
-    }
-  })
+  )
 
-  # do the actual assignment
-  eval(call2assignment(cl, parent.frame()), envir = parent.frame())
+  invisible(rhs_value)
 }
 
 #' @rdname typedAssignOps

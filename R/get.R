@@ -18,27 +18,49 @@
 #'
 #' @export
 g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {
-  varname <- getVarNames(x, sx = substitute(x), .character = .character)
-  if (length(varname) != 1) {
-    stop("If '.character = TRUE', 'x' must be a character string, i.e. a ",
-         "character vector of length 1.")
-  }
+  conditionR::setErrorContext(
+    "syntaxError",
+    base_class = "lazyTyperError"
+  )
 
+  varname <- getVarNames(x, sx = substitute(x), .character = .character,
+                         .single = TRUE)
+
+  if (!is.environment(env)) {
+    conditionR::signal(
+      conditionR::stackError(
+        "'env' must be an environment.",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
   if (inherits) {
     this_env <- getEnvOfObject(varname, env = env)
   } else {
     this_env <- env
   }
 
+  conditionR::setErrorContext(
+    "getError",
+    c(
+      modifiedConstantError = paste0("Failed to get the constant '", varname,
+                                     "'."),
+      paste0("Failed to get the variable '", varname, "'.")
+    ),
+    base_class = "lazyTyperError"
+  )
+
   if (!exists(varname, envir = this_env, inherits = FALSE)) {
-    stop("No such object: ", varname)
+    conditionR::signal(
+      conditionR::stackError(
+        "No such object.",
+        "notExistingError",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
-  valid <- checkType(varname, env = this_env)
-
-  if (!valid) {
-    stop("Variable '", varname, "' is not valid:\n", attr(valid, "error"))
-  }
+  checkType(varname, env = this_env)
 
   get(varname, envir = this_env, inherits = FALSE)
 }

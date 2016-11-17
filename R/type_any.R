@@ -10,8 +10,10 @@
 #' @family types
 NULL
 
+# nocov start
 checkPropertiesFun.any <- function() {
   args2list()
 }
+# nocov end
 
 checkTypeFun.any <- function(x) {}

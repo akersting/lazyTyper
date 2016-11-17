@@ -1,3 +1,4 @@
+# nocov start
 checkPropertiesFun.const <- function(value, hash) {
   stopifnot(hasValue("value"))
 
@@ -14,12 +15,19 @@ checkPropertiesFun.const <- function(value, hash) {
   }
   args2list()
 }
+# nocov end
 
 checkTypeFun.const <- function(x, value, hash) {
   if (hasValue("hash") && hash) {
     x <- digest::digest(x)
   }
   if (!identical(x, value)) {
-    markInvalidWError("Modified constant.")
+    conditionR::signal(
+      conditionR::stackError(
+        "The constand has been modified.",
+        "modifiedConstantError",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 }

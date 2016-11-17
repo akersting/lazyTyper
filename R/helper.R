@@ -109,28 +109,46 @@ args2list <- function(include_ellipsis = TRUE, simplify = TRUE,
   }
 }
 
-getVarNames <- function(x, sx, .character) {
+getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
   if (.character) {
     # do not test for positive length here; would break default behaviour of
     # remove/rm
     if (is.character(x)) {
+      if (.single && length(x) != 1) {
+        conditionR::signal(
+          conditionR::stackError(
+            paste0("If '.character = TRUE', 'x' must be a character string, ",
+                   "i.e. a character vector of length 1."),
+            base_class = "lazyTyperError"
+          )
+        )
+      }
       return(x)
     } else {
-      stop("If '.character' is TRUE, x must be a character vector.")
+      conditionR::signal(
+        conditionR::stackError(
+          "If '.character' is TRUE, x must be a character vector.",
+          base_class = "lazyTyperError"
+        )
+      )
     }
   } else {
     if (missing(x)) {
-      stop("Argument 'x' is missing (with no default).")
+      conditionR::signal(
+        conditionR::stackError(
+          "Argument 'x' is missing (with no default).",
+          base_class = "lazyTyperError"
+        )
+      )
     }
     if (!is.name(sx)) {
-      stop("Invalid variable name: ", deparse(sx))
+      conditionR::signal(
+        conditionR::stackError(
+          paste0("Invalid variable name: ", deparse(sx)),
+          base_class = "lazyTyperError"
+        )
+      )
     }
     return(as.character(sx))
   }
-}
-
-throwInvalidTypeError <- function(..., call = sys.call(-1)) {
-  cond <- structure(class = c("invalid_type_error", "error", "condition"),
-                    list(message = paste0(...), call = call))
-  stop(cond)
 }

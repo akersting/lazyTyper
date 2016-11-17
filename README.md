@@ -34,8 +34,9 @@ library(lazyTyper)
 
 a <- 1:3
 cast(a, "numeric", length = 2)
-#> Error in cast(a, "numeric", length = 2): Variable a is not of type 'numeric' or it does not have the desired properties:
-#> wrong length: expected 2, actual 3
+#> Error in cast(a, "numeric", length = 2): 
+#> [lazyTyperError -> castError] Could not cast variable 'a'.
+#> [... -> invalidTypeError -> invalidPropertyValueError] The variable has the wrong length. Expected length: 2, actual length: 3.
 cast(a, "numeric", length = 3)
 declare(b, "character")
 
@@ -56,7 +57,9 @@ is.typed(b)
 #> attr(,"properties")
 #> list()
 is.valid(b)
-#> Error in is.valid(b): No such object: b
+#> Error in is.valid(b): 
+#> [lazyTyperError -> validationError] Could not validate variable 'b'.
+#> [... -> notExistingError] No such object.
 ```
 
 ### Assignment Operators
@@ -69,15 +72,17 @@ names(a) %<-% .(c("first", "second", "third"))
 a[1] %<-s% .(2)
 
 a[4] %<-s% .(4)
-#> Error in a[4] %<-s% .(4): Typed assignment failed for variable 'a'. Reason:
-#> wrong length: expected 3, actual 4
+#> Error in a[4] %<-s% .(4): 
+#> [lazyTyperError -> typedAssignmentError] This assignment would invalidate the variable 'a'.
+#> [... -> invalidTypeError -> invalidPropertyValueError] The variable has the wrong length. Expected length: 3, actual length: 4.
 a
 #>  first second  third 
 #>      2      2      3
 
 class(a) %<-s% .("character")
-#> Error in class(a) %<-s% .("character"): Typed assignment failed for variable 'a'. Reason:
-#> wrong type: character
+#> Error in class(a) %<-s% .("character"): 
+#> [lazyTyperError -> typedAssignmentError] This assignment would invalidate the variable 'a'.
+#> [... -> invalidTypeError] The variable has the wrong type. Expected: numeric, actual: character.
 a
 #>  first second  third 
 #>      2      2      3
@@ -91,14 +96,18 @@ is.valid(a)
 b %<-% .("Hello World!")
 
 b %<-% .(123)
-#> Error in b %<-% .(123): Typed assignment failed for variable 'b'. Reason:
-#> Wrong type: double
+#> Error in b %<-% .(123): 
+#> [lazyTyperError -> typedAssignmentError] This assignment invalidated the variable 'b'.
+#> [... -> invalidTypeError] The variable has the wrong type. Expected: character, actual: numeric.
 b
 #> [1] 123
 is.valid(b)
 #> [1] FALSE
-#> attr(,"error")
-#> [1] "Wrong type: double"
+#> attr(,"errors")
+#> attr(,"errors")[[1]]
+#> <invalidTypeError in is.valid(b): 
+#> [lazyTyperError -> validationError] The variable 'b' is invalid.
+#> [... -> invalidTypeError] The variable has the wrong type. Expected: character, actual: numeric.>
 ```
 
 The advantage of `%<-%` however is that it allows to modify a variable in place, while `%<-s%` always creates a copy of it. This is due to the laziness of the type checking: it is only done after the actual assignment was performed. Hence, `%<-s%` has to create a backup of the variable beforehand, which it can then restore if the assignment invalidated the variable. The reason behind this laziness is that it is not possible to reliably determine how an assignment will change a variable without actually trying it out. For example, how `var` will change due to the following assignment depends on the exact definition of `myFancyFun<-`.
@@ -134,8 +143,9 @@ For all functions not part of lazyTyper, a typed variable in no way differs from
 ``` r
 a <- "I'm supposed to be numeric!"
 g(a)
-#> Error in g(a): Variable 'a' is not valid:
-#> wrong type: character
+#> Error in g(a): 
+#> [lazyTyperError -> getError] Failed to get the variable 'a'.
+#> [... -> invalidTypeError] The variable has the wrong type. Expected: numeric, actual: character.
 ```
 
 For example in tight for-loops one might want to deliberately use the base assignment operate since it does not perform type checking and hence can be considerably faster.
@@ -152,14 +162,15 @@ g(my_const)
 #> [1] 0.2875775 0.7883051 0.4089769 0.8830174 0.9404673
 my_const <- 1:5
 g(my_const)
-#> Error in g(my_const): Variable 'my_const' is not valid:
-#> Modified constant.
+#> Error in g(my_const): 
+#> [lazyTyperError -> getError] Failed to get the constant 'my_const'.
+#> [... -> invalidTypeError -> modifiedConstantError] The constand has been modified.
 ```
 
 Built-in Types
 --------------
 
-Currently only “any”, “numeric” and “character” are supported, the latter two only partially.
+Currently only “any”, “numeric” and “character” are partially supported.
 
 ToDo: describe the types with all their properties.
 

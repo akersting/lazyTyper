@@ -73,49 +73,88 @@ NULL
 #' @export
 cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
                  .character = FALSE) {
-  varname <- getVarNames(x, sx = substitute(x), .character = .character)
-  if (length(varname) != 1) {
-    stop("If '.character = TRUE', 'x' must be a character string, i.e. a ",
-         "character vector of length 1.")
-  }
+  conditionR::setErrorContext(
+    "syntaxError",
+    base_class = "lazyTyperError"
+  )
 
+  varname <- getVarNames(x, sx = substitute(x), .character = .character,
+                         .single = TRUE)
+
+  if (!is.environment(env)) {
+    conditionR::signal(
+      conditionR::stackError(
+        "'env' must be an environment.",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
   if (inherits) {
     this_env <- getEnvOfObject(varname, env = env)
   } else {
     this_env <- env
   }
 
+  conditionR::setErrorContext(
+    "castError",
+    paste0("Could not cast variable '", varname, "'."),
+    base_class = "lazyTyperError"
+  )
+
   if (existsInLazyTyperEnv(varname, env = this_env)) {
-    stop("Variable '", varname,  "' already declared/typed. To retype this ",
-         "variable, untype it first.")
+    conditionR::signal(
+      conditionR::stackError(
+        paste0("This variable was already declared/typed. To retype this ",
+               "variable, untype it first."),
+        "alreadyTypedError",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
   if (!exists(varname, envir = this_env, inherits = FALSE)) {
-    stop("Variable '", varname, "' does not exist and hence cannot be ",
-         "casted. Use 'declare' instead.")
+    conditionR::signal(
+      conditionR::stackError(
+        "No such object. Maybe you meant to use 'declare' instead!?",
+        "notExistingError",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
   assignToLazyTyperEnv(varname, type = type, properties = list(...),
                        env = this_env)
 
-  valid <- checkType(varname, env = this_env)
+  withCallingHandlers(
+    checkType(varname, env = this_env),
+    invalidTypeError = function(e) {
+      removeFromLazyTyperEnv(varname, env = this_env)
+    }
+  )
 
-  if (!valid) {
-    removeFromLazyTyperEnv(varname, env = this_env)
-    stop("Variable ", varname, " is not of type '", type, "' or it does not ",
-         "have the desired properties:\n", attr(valid, "error"))
-  }
+  invisible(NULL)
 }
 
 #' @rdname typed
+#'
+#' @param hash logical. Should hashing be used to detect if a constant was
+#'   modified?
+#'
 #' @export
 const <- function(x, hash = FALSE, env = parent.frame(), inherits = TRUE,
                   .character = FALSE) {
-  varname <- getVarNames(x, sx = substitute(x), .character = .character)
-  if (length(varname) != 1) {
-    stop("If '.character = TRUE', 'x' must be a character string, i.e. a ",
-         "character vector of length 1.")
-  }
+  conditionR::setErrorContext(
+    "syntaxError",
+    base_class = "lazyTyperError"
+  )
+
+  varname <- getVarNames(x, sx = substitute(x), .character = .character,
+                         .single = TRUE)
+
+  conditionR::setErrorContext(
+    base_class = "lazyTyperError"
+  )
+
   cast(varname, type = "const", value = x, hash = hash, env = env,
        inherits = inherits, .character = TRUE)
 }
@@ -123,17 +162,49 @@ const <- function(x, hash = FALSE, env = parent.frame(), inherits = TRUE,
 #' @rdname typed
 #' @export
 declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
+  conditionR::setErrorContext(
+    "syntaxError",
+    base_class = "lazyTyperError"
+  )
+
   varnames <- getVarNames(x, sx = substitute(x), .character = .character)
+
+  if (!is.environment(env)) {
+    conditionR::signal(
+      conditionR::stackError(
+        "'env' must be an environment.",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
+
+  conditionR::setErrorContext(
+    "declareError",
+    paste0("Failed to declare the variable(s)."),
+    base_class = "lazyTyperError"
+  )
 
   for (varname in varnames) {
     if (exists(varname, envir = env, inherits = FALSE)) {
-      stop("Variable '", varname, "' already exists and hence cannot be ",
-           "declared. Use 'cast' instead.")
+      conditionR::signal(
+        conditionR::stackError(
+          paste0("Variable '", varname, "' already exists and hence cannot be ",
+                 "declared. Use 'cast' instead."),
+          "alreadyExistsError",
+          base_class = "lazyTyperError"
+        )
+      )
     }
 
     if (existsInLazyTyperEnv(varname, env = env)) {
-      stop("Variable '", varname,  "' already declared. To redeclare this ",
-           "variable, untype it first.")
+      conditionR::signal(
+        conditionR::stackError(
+          paste0("Variable '", varname,  "' already declared. To redeclare ",
+                 "this variable, untype it first."),
+          "alreadyTypedError",
+          base_class = "lazyTyperError"
+        )
+      )
     }
   }
 
@@ -151,14 +222,29 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
         c(attr(scope_frame, "lazyTyper_vars2remove"), varnames)
     }
   }
+
+  invisible(NULL)
 }
 
 #' @rdname typed
 #' @export
 untype <- function(x, env = parent.frame(), inherits = FALSE,
                    .character = FALSE) {
+  conditionR::setErrorContext(
+    "syntaxError",
+    base_class = "lazyTyperError"
+  )
+
   varnames <- getVarNames(x, sx = substitute(x), .character = .character)
 
+  if (!is.environment(env)) {
+    conditionR::signal(
+      conditionR::stackError(
+        "'env' must be an environment.",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
   for (varname in varnames) {
     if (inherits) {
       this_env <- getEnvOfObject(varname, env = env)
@@ -187,7 +273,13 @@ untype <- function(x, env = parent.frame(), inherits = FALSE,
 #' @rdname typed
 #' @export
 is.typed <- function(x) {
+  conditionR::setErrorContext(
+    "syntaxError",
+    base_class = "lazyTyperError"
+  )
+
   varname <- getVarNames(x, sx = substitute(x), .character = FALSE)
+
   lazyTyperList <- getFromLazyTyperEnv(varname, env = parent.frame())
   if (!is.null(lazyTyperList)) {
     res <- TRUE
@@ -202,9 +294,44 @@ is.typed <- function(x) {
 #' @rdname typed
 #' @export
 is.valid <- function(x) {
+  conditionR::setErrorContext(
+    "syntaxError",
+    base_class = "lazyTyperError"
+  )
+
   varname <- getVarNames(x, sx = substitute(x), .character = FALSE)
+
+  conditionR::setErrorContext(
+    "validationError",
+    c(
+      invalidTypeError = paste0("The variable '", varname, "' is invalid."),
+      paste0("Could not validate variable '", varname, "'.")
+    ),
+    base_class = "lazyTyperError"
+  )
+
   if (!exists(varname, envir = parent.frame(), inherits = FALSE)) {
-    stop("No such object: ", varname)
+    conditionR::signal(
+      conditionR::stackError(
+        "No such object.",
+        "notExistingError",
+        base_class = "lazyTyperError"
+      )
+    )
   }
-  checkType(varname = varname, env = parent.frame())
+
+  valid <- TRUE
+  errors <- NULL
+  withCallingHandlers(
+    checkType(varname = varname, env = parent.frame()),
+    invalidTypeError = function(e) {
+      valid <<- FALSE
+      errors <<- c(errors, list(e))
+      conditionR::ignoreError(e)
+    })
+  if (!is.null(errors)) {
+    attr(valid, "errors") <- errors
+  }
+
+  valid
 }

@@ -27,4 +27,6 @@ Suggests: testthat,
     knitr,
     rmarkdown,
     digest
-Imports: compiler
+Imports: conditionR,
+    compiler
+Remotes: akersting/conditionR@develop
