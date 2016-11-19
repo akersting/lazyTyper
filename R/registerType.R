@@ -21,9 +21,10 @@ registerAlias <- function(alias, type, fixed, defaults, env = types) {
   stopifnot(is.list(defaults))
   stopifnot(is.list(defaults))
 
-  checkPropertiesFun <- getCheckPropertiesFun(type, find_hidden = TRUE)
+  checkPropertiesFun <- getCheckFun(type, "checkPropertiesFun",
+                                    find_hidden = TRUE)
   formals_properties <- formals(checkPropertiesFun)
-  checkTypeFun <- getCheckTypeFun(type)
+  checkTypeFun <- getCheckFun(type, "checkTypeFun", find_hidden = TRUE)
   formals_type <- formals(checkTypeFun)
 
   if (length(fixed) > 0 &&
@@ -91,6 +92,14 @@ registerAlias <- function(alias, type, fixed, defaults, env = types) {
 #'
 #'@export
 registerCustomType <- function(type, checkPropertiesFun, checkTypeFun) {
+
+  custom_types <- get0(".lazyTyper_custom_types", inherits = FALSE,
+                       envir = parent.frame())
+  if (is.null(custom_types)) {
+    custom_types <- new.env(parent = emptyenv())
+    assign(".lazyTyper_custom_types", custom_types, envir = parent.frame())
+  }
+
   registerType(type = type, checkPropertiesFun = checkPropertiesFun,
                checkTypeFun = checkTypeFun, env = custom_types)
 }
@@ -125,5 +134,13 @@ registerCustomType <- function(type, checkPropertiesFun, checkTypeFun) {
 #' @export
 registerCustomAlias <- function(alias, type, fixed = list(),
                                 defaults = list()) {
+
+  custom_types <- get0(".lazyTyper_custom_types", inherits = FALSE,
+                       envir = parent.frame())
+  if (is.null(custom_types)) {
+    custom_types <- new.env(parent = emptyenv())
+    assign(".lazyTyper_custom_types", custom_types, envir = parent.frame())
+  }
+
   registerAlias(alias, type, fixed, defaults, env = custom_types)
 }

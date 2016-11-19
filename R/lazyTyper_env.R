@@ -27,7 +27,7 @@ assignToLazyTyperEnv <- function(x, type, properties, env) {
   }
 
   properties <- checkProperties(type, properties)
-  checkTypeFun <- getCheckTypeFun(type)
+  checkTypeFun <- getCheckFun(type, "checkTypeFun")
 
   value <- list(type = type, properties = properties,
                 checkTypeFun = checkTypeFun)

@@ -1,11 +1,7 @@
 # nocov start
+types <- new.env(parent = emptyenv())
+
 .onLoad <- function(libname, pkgname) {
-  types <- new.env(parent = emptyenv())
-  assign("types", types, envir = getNamespace("lazyTyper"))
-
-  custom_types <- new.env(parent = emptyenv())
-  assign("custom_types", custom_types, envir = getNamespace("lazyTyper"))
-
   registerType("any", checkPropertiesFun.any, checkTypeFun.any)
 
   registerType("const", checkPropertiesFun.const, checkTypeFun.const)

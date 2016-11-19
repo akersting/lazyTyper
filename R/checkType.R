@@ -20,20 +20,3 @@ checkType <- function(varname, env) {
     )
   }
 }
-
-getCheckTypeFun <- function(type) {
-
-  checkTypeFun <- get0(type, envir = custom_types,
-                          ifnotfound = NULL)[["checkTypeFun"]]
-  if (is.null(checkTypeFun)) {
-    checkTypeFun <- get0(type, envir = types,
-                            ifnotfound = NULL)[["checkTypeFun"]]
-    if (is.null(checkTypeFun)) {
-      # we should actually never end here since getCheckPropertiesFun() is
-      # always called first
-      stop("Neither a built-in nor a registered custom type: ", type)
-    }
-  }
-
-  checkTypeFun
-}
