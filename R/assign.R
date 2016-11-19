@@ -184,8 +184,8 @@ call2assignment <- function(cl, eval.env) {
 
   rhs <- cl[[3]][[2]]  # RHS is wrapped in .()
   envir <- environment()
-  eval(bquote(delayedAssign("rhs", value = .(rhs), eval.env = eval.env,
-                            assign.env = envir)))  # .() here is bquote syntax
+  do.call(delayedAssign, list(x = "rhs", value = rhs, eval.env = eval.env,
+                              assign.env = envir))
 
   cl[3] <- list(rhs)  # list() since RHS could be NULL
   cl
