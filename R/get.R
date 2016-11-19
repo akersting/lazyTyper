@@ -18,7 +18,7 @@
 #'
 #' @export
 g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {
-  conditionR::setErrorContext(
+  setErrorContext(
     "syntaxError",
     base_class = "lazyTyperError"
   )
@@ -27,8 +27,8 @@ g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {
                          .single = TRUE)
 
   if (!is.environment(env)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "'env' must be an environment.",
         base_class = "lazyTyperError"
       )
@@ -40,7 +40,7 @@ g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {
     this_env <- env
   }
 
-  conditionR::setErrorContext(
+  setErrorContext(
     "getError",
     c(
       modifiedConstantError = paste0("Failed to get the constant '", varname,
@@ -51,8 +51,8 @@ g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {
   )
 
   if (!exists(varname, envir = this_env, inherits = FALSE)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "No such object.",
         "notExistingError",
         base_class = "lazyTyperError"

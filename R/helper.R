@@ -115,8 +115,8 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
     # remove/rm
     if (is.character(x)) {
       if (.single && length(x) != 1) {
-        conditionR::signal(
-          conditionR::stackError(
+        signal(
+          stackError(
             paste0("If '.character = TRUE', 'x' must be a character string, ",
                    "i.e. a character vector of length 1."),
             base_class = "lazyTyperError"
@@ -125,8 +125,8 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
       }
       return(x)
     } else {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           "If '.character' is TRUE, x must be a character vector.",
           base_class = "lazyTyperError"
         )
@@ -134,16 +134,16 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
     }
   } else {
     if (missing(x)) {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           "Argument 'x' is missing (with no default).",
           base_class = "lazyTyperError"
         )
       )
     }
     if (!is.name(sx)) {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           paste0("Invalid variable name: ", deparse(sx)),
           base_class = "lazyTyperError"
         )

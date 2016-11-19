@@ -121,8 +121,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
                                 allow_NULL, type) {
   if (is.null(x)) {
     if (!hasValue("allow_NULL") || !allow_NULL) {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           "The variable is of type 'NULL'.",
           base_class = "lazyTyperError"
         )
@@ -146,8 +146,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
     }
   )
   if (!correct_type) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("The variable has the wrong type. Expected: ", type,
                ", actual: ", mode(x), "."),
         base_class = "lazyTyperError"
@@ -157,8 +157,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
   }
 
   if (hasValue("length") && base::length(x) != length) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("The variable has the wrong length. Expected length: ", length,
                ", actual length: ", base::length(x), "."),
         c("invalidPropertyValueError"),
@@ -167,8 +167,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
     )
   }
   if (hasValue("min_length") && base::length(x) < min_length) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("The variable has the wrong length. Expected min length: ",
                min_length, ", actual length: ", base::length(x), "."),
         c("invalidPropertyValueError"),
@@ -177,8 +177,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
     )
   }
   if (hasValue("max_length") && base::length(x) > max_length) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("The variable has the wrong length. Expected max length: ",
                min_length, ", actual length: ", base::length(x), "."),
         c("invalidPropertyValueError"),
@@ -193,8 +193,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
   }
 
   if (hasValue("set") && !all(x_omit %in% set)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("The variable contains the following values which are not in ",
                "the set of allowed values: ",
                paste0(x_omit[!x_omit %in% set], collapse = ", "), "."),
@@ -205,8 +205,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
   }
 
   if (hasValue("min") && any(x_omit < min)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("The variable contains too small values. Allowed smallest ",
                "value: ", min, ", actual smallest value: ", min(x_omit), "."),
         c("invalidPropertyValueError"),
@@ -215,8 +215,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
     )
   }
   if (hasValue("max") && any(x_omit > max)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("The variable contains too large values. Allowed largest ",
                "value: ", max, ", actual smallest value: ", max(x_omit), "."),
         c("invalidPropertyValueError"),
@@ -227,8 +227,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
 
   if (hasValue("whole")) {
     if (any(abs(x_omit - round(x_omit)) > .Machine$double.eps^0.5)) {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           "The variable does not only contain whole numbers.",
           c("invalidPropertyValueError"),
           base_class = "lazyTyperError"
@@ -240,8 +240,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
   if (hasValue("pattern")) {
     x_invalid <- grep(pattern, x_omit, value = TRUE, invert = TRUE)
     if (base::length(x_invalid) > 0) {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           paste0("The variable contains the following values which do not ",
                  "match the pattern: ", paste0(x_invalid, collapse = ", "),
                  "."),
@@ -253,8 +253,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
   }
 
   if (hasValue("allow_NA") && !allow_NA && any(is.na(x) & !is.nan(x))) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "The variable contains NAs.",
         c("invalidPropertyValueError"),
         base_class = "lazyTyperError"
@@ -263,8 +263,8 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
   }
 
   if (hasValue("allow_NaN") && !allow_NaN && any(is.nan(x))) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "The variable contains NaNs.",
         c("invalidPropertyValueError"),
         base_class = "lazyTyperError"

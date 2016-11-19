@@ -97,7 +97,7 @@ NULL
   rhs_value <- eval(call2assignment(cl, parent.frame()), envir = parent.frame())
 
   # do the type checking
-  conditionR::setErrorContext(
+  setErrorContext(
     "typedAssignmentError",
     c(
       notTypedError = paste0("Cannot check type of variable '",
@@ -143,7 +143,7 @@ NULL
   rhs_value <- eval(call2assignment(cl, parent.frame()), envir = parent.frame())
 
   # do the type checking
-  conditionR::setErrorContext(
+  setErrorContext(
     "typedAssignmentError",
     c(
       notTypedError = paste0("This assignment is invalid."),

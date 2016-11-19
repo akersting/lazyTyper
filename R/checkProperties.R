@@ -2,7 +2,7 @@
 checkProperties <- function(type, properties) {
   checkPropertiesFun <- getCheckFun(type, "checkPropertiesFun")
 
-  conditionR::contextualize(
+  contextualize(
     match.call(checkPropertiesFun, as.call(c("dummyFUN", properties)),
                expand.dots = FALSE),
     error = list(message = paste0("Invalid properties for type '", type, "'."),

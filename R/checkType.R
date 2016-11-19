@@ -6,15 +6,15 @@ checkType <- function(varname, env) {
     named <- getNamed(varname, env)
     on.exit(setNamed(varname, env, named))
 
-    conditionR::setErrorContext("invalidTypeError",
+    setErrorContext("invalidTypeError",
                                 base_class = "lazyTyperError")
 
     do.call(lazyTyperList[["checkTypeFun"]],
             c(x = list(get(varname, envir = env, inherits = FALSE)),
               lazyTyperList[["properties"]]))
   } else {
-    conditionR::signal(
-      conditionR::stackError("This is not a typed variable.",
+    signal(
+      stackError("This is not a typed variable.",
                              "notTypedError",
                              base_class = "lazyTyperError")
     )

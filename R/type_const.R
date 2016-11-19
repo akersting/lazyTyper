@@ -22,8 +22,8 @@ checkTypeFun.const <- function(x, value, hash) {
     x <- digest::digest(x)
   }
   if (!identical(x, value)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "The constand has been modified.",
         "modifiedConstantError",
         base_class = "lazyTyperError"

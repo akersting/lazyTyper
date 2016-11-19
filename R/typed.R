@@ -73,7 +73,7 @@ NULL
 #' @export
 cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
                  .character = FALSE) {
-  conditionR::setErrorContext(
+  setErrorContext(
     "syntaxError",
     base_class = "lazyTyperError"
   )
@@ -82,8 +82,8 @@ cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
                          .single = TRUE)
 
   if (!is.environment(env)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "'env' must be an environment.",
         base_class = "lazyTyperError"
       )
@@ -95,15 +95,15 @@ cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
     this_env <- env
   }
 
-  conditionR::setErrorContext(
+  setErrorContext(
     "castError",
     paste0("Could not cast variable '", varname, "'."),
     base_class = "lazyTyperError"
   )
 
   if (existsInLazyTyperEnv(varname, env = this_env)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         paste0("This variable was already declared/typed. To retype this ",
                "variable, untype it first."),
         "alreadyTypedError",
@@ -113,8 +113,8 @@ cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
   }
 
   if (!exists(varname, envir = this_env, inherits = FALSE)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "No such object. Maybe you meant to use 'declare' instead!?",
         "notExistingError",
         base_class = "lazyTyperError"
@@ -143,7 +143,7 @@ cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
 #' @export
 const <- function(x, hash = FALSE, env = parent.frame(), inherits = TRUE,
                   .character = FALSE) {
-  conditionR::setErrorContext(
+  setErrorContext(
     "syntaxError",
     base_class = "lazyTyperError"
   )
@@ -151,7 +151,7 @@ const <- function(x, hash = FALSE, env = parent.frame(), inherits = TRUE,
   varname <- getVarNames(x, sx = substitute(x), .character = .character,
                          .single = TRUE)
 
-  conditionR::setErrorContext(
+  setErrorContext(
     base_class = "lazyTyperError"
   )
 
@@ -162,7 +162,7 @@ const <- function(x, hash = FALSE, env = parent.frame(), inherits = TRUE,
 #' @rdname typed
 #' @export
 declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
-  conditionR::setErrorContext(
+  setErrorContext(
     "syntaxError",
     base_class = "lazyTyperError"
   )
@@ -170,15 +170,15 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
   varnames <- getVarNames(x, sx = substitute(x), .character = .character)
 
   if (!is.environment(env)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "'env' must be an environment.",
         base_class = "lazyTyperError"
       )
     )
   }
 
-  conditionR::setErrorContext(
+  setErrorContext(
     "declareError",
     paste0("Failed to declare the variable(s)."),
     base_class = "lazyTyperError"
@@ -186,8 +186,8 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
 
   for (varname in varnames) {
     if (exists(varname, envir = env, inherits = FALSE)) {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           paste0("Variable '", varname, "' already exists and hence cannot be ",
                  "declared. Use 'cast' instead."),
           "alreadyExistsError",
@@ -197,8 +197,8 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
     }
 
     if (existsInLazyTyperEnv(varname, env = env)) {
-      conditionR::signal(
-        conditionR::stackError(
+      signal(
+        stackError(
           paste0("Variable '", varname,  "' already declared. To redeclare ",
                  "this variable, untype it first."),
           "alreadyTypedError",
@@ -230,7 +230,7 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
 #' @export
 untype <- function(x, env = parent.frame(), inherits = FALSE,
                    .character = FALSE) {
-  conditionR::setErrorContext(
+  setErrorContext(
     "syntaxError",
     base_class = "lazyTyperError"
   )
@@ -238,8 +238,8 @@ untype <- function(x, env = parent.frame(), inherits = FALSE,
   varnames <- getVarNames(x, sx = substitute(x), .character = .character)
 
   if (!is.environment(env)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "'env' must be an environment.",
         base_class = "lazyTyperError"
       )
@@ -261,7 +261,7 @@ untype <- function(x, env = parent.frame(), inherits = FALSE,
         attr(scope_frame, "lazyTyper_vars2remove") <-
           attr(scope_frame, "lazyTyper_vars2remove")[
             attr(scope_frame, "lazyTyper_vars2remove") != varname
-          ]
+            ]
         break
       }
     }
@@ -273,7 +273,7 @@ untype <- function(x, env = parent.frame(), inherits = FALSE,
 #' @rdname typed
 #' @export
 is.typed <- function(x) {
-  conditionR::setErrorContext(
+  setErrorContext(
     "syntaxError",
     base_class = "lazyTyperError"
   )
@@ -294,14 +294,14 @@ is.typed <- function(x) {
 #' @rdname typed
 #' @export
 is.valid <- function(x) {
-  conditionR::setErrorContext(
+  setErrorContext(
     "syntaxError",
     base_class = "lazyTyperError"
   )
 
   varname <- getVarNames(x, sx = substitute(x), .character = FALSE)
 
-  conditionR::setErrorContext(
+  setErrorContext(
     "validationError",
     c(
       invalidTypeError = paste0("The variable '", varname, "' is invalid."),
@@ -311,8 +311,8 @@ is.valid <- function(x) {
   )
 
   if (!exists(varname, envir = parent.frame(), inherits = FALSE)) {
-    conditionR::signal(
-      conditionR::stackError(
+    signal(
+      stackError(
         "No such object.",
         "notExistingError",
         base_class = "lazyTyperError"
@@ -327,7 +327,7 @@ is.valid <- function(x) {
     invalidTypeError = function(e) {
       valid <<- FALSE
       errors <<- c(errors, list(e))
-      conditionR::ignoreError(e)
+      ignoreError(e)
     })
   if (!is.null(errors)) {
     attr(valid, "errors") <- errors
