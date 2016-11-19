@@ -81,8 +81,10 @@ NULL
 
   # rules out usage as 'what' in do.call() or 'FUN' in *apply()
   if (!(identical(cl[[1]], quote(`%<-%`)) ||
-        identical(cl[[1]], quote(lazyTyper::`%<-%`)) ||
-        identical(cl[[1]], quote(lazyTyper:::`%<-%`))) || length(cl) != 3) {
+        identical(cl[[1]], call("::", as.name("lazyTyper"), as.name("%<-%"))) ||
+        identical(cl[[1]],
+                  call(":::", as.name("lazyTyper"), as.name("%<-%")))) ||
+      length(cl) != 3) {
     stop("Invalid usage of typed assignment operator.")
   }
 
@@ -120,8 +122,11 @@ NULL
 
   # rules out usage as 'what' in do.call() or 'FUN' in *apply()
   if (!(identical(cl[[1]], quote(`%<-s%`)) ||
-        identical(cl[[1]], quote(lazyTyper::`%<-s%`)) ||
-        identical(cl[[1]], quote(lazyTyper:::`%<-s%`))) || length(cl) != 3) {
+        identical(cl[[1]],
+                  call("::", as.name("lazyTyper"), as.name("%<-s%"))) ||
+        identical(cl[[1]],
+                  call(":::", as.name("lazyTyper"), as.name("%<-s%")))) ||
+      length(cl) != 3) {
     stop("Invalid usage of typed assignment operator.")
   }
 
