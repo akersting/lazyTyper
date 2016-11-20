@@ -14,8 +14,10 @@ knitr::opts_chunk$set(
 
 # lazyTyper
 
+[![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![Build Status](https://travis-ci.org/akersting/lazyTyper.svg?branch=develop)](https://travis-ci.org/akersting/lazyTyper)
 [![Coverage Status](https://codecov.io/github/akersting/lazyTyper/coverage.svg?branch=develop)](https://codecov.io/github/akersting/lazyTyper)
+[![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 lazyTyper adds the concept of strong typing to R. Before its first use, a
 variable can be declared to be of a specific type. Existing variables can be 
@@ -143,9 +145,40 @@ g(my_const)
 ```
 
 ## Built-in Types
-Currently only "any", "numeric" and "character" are partially supported.
+For now, only type `"any"` and the vector types discussed below are supported.
 
-ToDo: describe the types with all their properties.
+### Vector Types
+
+The following table shows the supported properties (along the columns) of the currently implemented
+built-in vector types (along the rows). They all inherit from / are aliases of the hidden (base) type
+`.vector`. 
+
+A cell which is not crossed out indicates that the respective property can be set when using that type with `declare` or `cast`. The value in such a cell is the default value of the property for that type. 
+
+A crossed out cell indicates that the respective property cannot be set for that type, i.e. it is fixed to the (crossed out) value in the cell. 
+
+The meaning of a completely empty or crossed out empty cell, i.e of an unset property, is given by the first row.
+
+|          Type |     length    |   min_length  |   max_length  |      set      |      min      |      max      |     whole     |    pattern    |    allow_NA   |   allow_NaN   | allow_NULL |       type      |
+|--------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:----------:|:---------------:|
+|   **.vector** | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _no/FALSE_ |      _N/A_      |
+|    **vector** |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |            |   ~~"vector"~~  |
+|   **logical** |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |               |    &mdash;    |            |  ~~"logical"~~  |
+|   **numeric** |               |               |               |               |               |               |               |    &mdash;    |               |               |            |  ~~"numeric"~~  |
+|   **integer** |               |               |               |    &mdash;    |               |               |    ~~TRUE~~   |    &mdash;    |               |               |            |  ~~"numeric"~~  |
+|     **count** |               |               |               |    &mdash;    |     ~~0~~     |               |    ~~TRUE~~   |    &mdash;    |               |               |            |  ~~"numeric"~~  |
+|    **scalar** |     ~~1~~     |    &mdash;    |    &mdash;    |               |               |               |               |    &mdash;    |     FALSE     |     FALSE     |            |  ~~"numeric"~~  |
+| **character** |               |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |               |               |    &mdash;    |            | ~~"character"~~ |
+|    **string** |     ~~1~~     |    &mdash;    |    &mdash;    |               |    &mdash;    |    &mdash;    |    &mdash;    |               |     FALSE     |    &mdash;    |            | ~~"character"~~ |
+
+#### The Properties
+- `length`/`min_length`/`max_length`: the allowed exact/minimum/maximum length of the vector. If `length` is set then `min_length` and `max_length` cannot be set. `max_length` must be larger equal `min_length`.
+- `set`: a vector of allowed values. If set, then `min`, `max`, `whole` and `pattern` cannot be set. If `set` contains at least one `NA`/`NaN` then `allow_NA`/`allow_NaN` is set to `TRUE`.
+- `min`/`max`:  the allowed minimum/maximum value to be stored in the vector. `max` must be larger equal `min`.
+- `whole`: if `TRUE` only approximately whole numbers may be stored in the vector, i.e. the difference between all values and their nearest whole number must be less or equal `.Machine$double.eps^0.5`.
+- `pattern`: only allow values in the vector which this regular expression matches.
+- `allow_NA`/`allow_NaN`: are `NA`/`NaN` values allowed in the vector? `allow_NA` here strictly refers only to `NA` (and not `NaN`), i.e. `any(is.na(x) & !is.nan(x))` is used to test this. If `set` contains `NA`/`NaN` then `allow_NA`/`allow_NaN` must not be `FALSE`.
+- `allow_NULL`: may the whole variable be `NULL`? Note that the default does not allow this, i.e. not setting `allow_NULL` it is equivalent to setting `allow_NULL = FALSE`.
 
 ## Registering Custom Types
 ToDo: explain how to register custom types and overload built-in types.

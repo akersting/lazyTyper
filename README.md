@@ -2,7 +2,7 @@
 lazyTyper
 =========
 
-[![Build Status](https://travis-ci.org/akersting/lazyTyper.svg?branch=develop)](https://travis-ci.org/akersting/lazyTyper) [![Coverage Status](https://codecov.io/github/akersting/lazyTyper/coverage.svg?branch=develop)](https://codecov.io/github/akersting/lazyTyper)
+[![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip) [![Build Status](https://travis-ci.org/akersting/lazyTyper.svg?branch=develop)](https://travis-ci.org/akersting/lazyTyper) [![Coverage Status](https://codecov.io/github/akersting/lazyTyper/coverage.svg?branch=develop)](https://codecov.io/github/akersting/lazyTyper) [![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 lazyTyper adds the concept of strong typing to R. Before its first use, a variable can be declared to be of a specific type. Existing variables can be casted to a specific type. Assigning values of the wrong type to such typed variables will throw an error.
 
@@ -170,9 +170,199 @@ g(my_const)
 Built-in Types
 --------------
 
-Currently only “any”, “numeric” and “character” are partially supported.
+For now, only type `"any"` and the vector types discussed below are supported.
 
-ToDo: describe the types with all their properties.
+### Vector Types
+
+The following table shows the supported properties (along the columns) of the currently implemented built-in vector types (along the rows). They all inherit from / are aliases of the hidden (base) type `.vector`.
+
+A cell which is not crossed out indicates that the respective property can be set when using that type with `declare` or `cast`. The value in such a cell is the default value of the property for that type.
+
+A crossed out cell indicates that the respective property cannot be set for that type, i.e. it is fixed to the (crossed out) value in the cell.
+
+The meaning of a completely empty or crossed out empty cell, i.e of an unset property, is given by the first row.
+
+<table style="width:100%;">
+<colgroup>
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="6%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Type</th>
+<th align="center">length</th>
+<th align="center">min_length</th>
+<th align="center">max_length</th>
+<th align="center">set</th>
+<th align="center">min</th>
+<th align="center">max</th>
+<th align="center">whole</th>
+<th align="center">pattern</th>
+<th align="center">allow_NA</th>
+<th align="center">allow_NaN</th>
+<th align="center">allow_NULL</th>
+<th align="center">type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right"><strong>.vector</strong></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>not checked</em></td>
+<td align="center"><em>no/FALSE</em></td>
+<td align="center"><em>N/A</em></td>
+</tr>
+<tr class="even">
+<td align="right"><strong>vector</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"><del>“vector”</del></td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>logical</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"><del>“logical”</del></td>
+</tr>
+<tr class="even">
+<td align="right"><strong>numeric</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><del>“numeric”</del></td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>integer</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><del>TRUE</del></td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><del>“numeric”</del></td>
+</tr>
+<tr class="even">
+<td align="right"><strong>count</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center"><del>0</del></td>
+<td align="center"></td>
+<td align="center"><del>TRUE</del></td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><del>“numeric”</del></td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>scalar</strong></td>
+<td align="center"><del>1</del></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center">FALSE</td>
+<td align="center">FALSE</td>
+<td align="center"></td>
+<td align="center"><del>“numeric”</del></td>
+</tr>
+<tr class="even">
+<td align="right"><strong>character</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"><del>“character”</del></td>
+</tr>
+<tr class="odd">
+<td align="right"><strong>string</strong></td>
+<td align="center"><del>1</del></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center">FALSE</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"><del>“character”</del></td>
+</tr>
+</tbody>
+</table>
+
+#### The Properties
+
+-   `length`/`min_length`/`max_length`: the allowed exact/minimum/maximum length of the vector. If `length` is set then `min_length` and `max_length` cannot be set. `max_length` must be larger equal `min_length`.
+-   `set`: a vector of allowed values. If set, then `min`, `max`, `whole` and `pattern` cannot be set. If `set` contains at least one `NA`/`NaN` then `allow_NA`/`allow_NaN` is set to `TRUE`.
+-   `min`/`max`: the allowed minimum/maximum value to be stored in the vector. `max` must be larger equal `min`.
+-   `whole`: if `TRUE` only approximately whole numbers may be stored in the vector, i.e. the difference between all values and their nearest whole number must be less or equal `.Machine$double.eps^0.5`.
+-   `pattern`: only allow values in the vector which this regular expression matches.
+-   `allow_NA`/`allow_NaN`: are `NA`/`NaN` values allowed in the vector? `allow_NA` here strictly refers only to `NA` (and not `NaN`), i.e. `any(is.na(x) & !is.nan(x))` is used to test this. If `set` contains `NA`/`NaN` then `allow_NA`/`allow_NaN` must not be `FALSE`.
+-   `allow_NULL`: may the whole variable be `NULL`? Note that the default does not allow this, i.e. not setting `allow_NULL` it is equivalent to setting `allow_NULL = FALSE`.
 
 Registering Custom Types
 ------------------------
