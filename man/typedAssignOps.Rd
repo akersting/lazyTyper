@@ -25,7 +25,7 @@ argument (e.g. \code{names(z)} or \code{names(z)[1:3]}).}
 right hand side of an assignment.}
 }
 \value{
-Both operators invisiblty return \code{rhs} evaluated, just as does
+Both operators invisibly return \code{rhs} evaluated, just as does
   base \code{\link{<-}}. Calling \code{.()} always throws an error.
 }
 \description{
@@ -39,7 +39,7 @@ The right hand side of a typed assignment must be wrapped in
   \code{.()}. This is used to "overrule" the high precedence of custom
   operators like \code{\%<-\%} and \code{\%<-s\%} (see \link[base]{Syntax})
   in an explicit way (compared to using parentheses, which might easily be
-  forgotton). If used as intended, the function \code{.()} is actually never
+  forgotten). If used as intended, the function \code{.()} is actually never
   really called and it is only included in this package to enable proper
   syntax highlighting and code diagnostics in editors/IDEs like RStudio.
   Hence, it is probably best to not think of \code{.()} as a separate
