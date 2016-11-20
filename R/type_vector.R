@@ -128,10 +128,11 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
         )
       )
     }
-    return(invisible())
+    return(invisible())  # X is NULL -> we are done
   }
 
-  correct_type <- switch(type,
+  correct_type <- switch(
+    type,
     logical = {
       is.null(dim(x)) && is.logical(x)
     },
@@ -153,7 +154,7 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
         base_class = "lazyTyperError"
       )
     )
-    return(invisible())
+    return(invisible())  # stop here if ignoreError restart is invoked
   }
 
   if (hasValue("length") && base::length(x) != length) {
@@ -218,7 +219,7 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
     signal(
       stackError(
         paste0("The variable contains too large values. Allowed largest ",
-               "value: ", max, ", actual smallest value: ", max(x_omit), "."),
+               "value: ", max, ", actual largest value: ", max(x_omit), "."),
         c("invalidPropertyValueError"),
         base_class = "lazyTyperError"
       )
