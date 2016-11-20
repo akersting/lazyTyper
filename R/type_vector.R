@@ -6,110 +6,230 @@ checkPropertiesFun.vector <- function(length, min_length, max_length, set, min,
   list2env(as.list(parent.env(environment()), all.names = TRUE),
            envir = environment())
 
-  if (hasValue("length")) {
-    stopifnot(is.numeric(length), base::length(length) == 1, length >= 0)
+  if (hasValue("length") && (!is.numeric(length) || base::length(length) != 1 ||
+                             is.na(length) || length < 0)) {
+    signal(
+      stackError(
+        "'length' must be a scalar greater equal 0.",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
   if (hasValue("min_length")) {
     if (hasValue("length")) {
-      warning("Ignoring 'min_length' since 'length' is given.")
-      rm(min_length)
-    } else {
-      stopifnot(is.numeric(min_length), base::length(min_length) == 1,
-                min_length >= 0)
+      signal(
+        stackError(
+          "'min_length' must not be set if 'length' is set.",
+          "conflictingPropertyError",
+          base_class = "lazyTyperError"
+        )
+      )
+    } else if (!is.numeric(min_length) || base::length(min_length) != 1 ||
+               is.na(min_length) || min_length < 0) {
+      signal(
+        stackError(
+          "'min_length' must be a scalar greater equal 0.",
+          base_class = "lazyTyperError"
+        )
+      )
     }
   }
 
   if (hasValue("max_length")) {
     if (hasValue("length")) {
-      warning("Ignoring 'max_length' since 'length' is given.")
-      rm(max_length)
+      signal(
+        stackError(
+          "'max_length' must not be set if 'length' is set.",
+          "conflictingPropertyError",
+          base_class = "lazyTyperError"
+        )
+      )
     } else {
-      stopifnot(is.numeric(max_length), base::length(max_length) == 1,
-                max_length >= 0)
+      if (!is.numeric(max_length) || base::length(max_length) != 1 ||
+          is.na(max_length) || max_length < 0) {
+        signal(
+          stackError(
+            "'max_length' must be a scalar greater equal 0.",
+            base_class = "lazyTyperError"
+          )
+        )
+      }
 
-      if (hasValue("min_length")) {
-        stopifnot(max_length >= min_length)
+      if (hasValue("min_length") && min_length > max_length) {
+        signal(
+          stackError(
+            "'max_length' must be larger equal 'min_length'.",
+            "conflictingPropertyError",
+            base_class = "lazyTyperError"
+          )
+        )
       }
     }
   }
 
   if (hasValue("set")) {
-    switch(type,
-           logical = stopifnot(is.logical(set)),
-           numeric = stopifnot(is.numeric(set)),
-           character = stopifnot(is.character(set)))
+    if (hasValue("min") || hasValue("max") || hasValue("whole") ||
+        hasValue("pattern")) {
+      signal(
+        stackError(
+          paste0(
+            "If 'set' is given, ",
+            paste0("'", c("min", "max", "whole", "pattern")[
+              c(hasValue("min"), hasValue("max"),
+                hasValue("whole"), hasValue("pattern"))], "'", collapse = ", "),
+            " must not be given."
+          ),
+          base_class = "lazyTyperError"
+        )
+      )
+
+    }
+    correct_type <- switch(
+      type,
+      logical = {
+        is.null(dim(set)) && is.logical(set)
+      },
+      numeric = {
+        is.null(dim(set)) && is.numeric(set)
+      },
+      character = {
+        is.null(dim(set)) && is.character(set)
+      }
+    )
+
+    if (!correct_type) {
+      signal(
+        stackError(
+          paste0("'set' must be a ", type, " vector."),
+          base_class = "lazyTyperError"
+        )
+      )
+    }
+
     if (any(is.na(set))) {
       if (hasValue("allow_NA") && !allow_NA) {
-        stop("NA in set by allow_NA = FALSE")
+        signal(
+          stackError(
+            "If 'NA' is in 'set' then 'allow_NA' must not be FALSE.",
+            "conflictingPropertyError",
+            base_class = "lazyTyperError"
+          )
+        )
       }
       allow_NA <- TRUE
     }
     if (any(is.nan(set))) {
       if (hasValue("allow_NaN") && !allow_NaN) {
-        stop("NaN in set by allow_NaN = FALSE")
+        signal(
+          stackError(
+            "If 'NaN' is in 'set' then 'allow_NaN' must not be FALSE.",
+            "conflictingPropertyError",
+            base_class = "lazyTyperError"
+          )
+        )
       }
       allow_NaN <- TRUE
     }
-  }
-  if (hasValue("min")) {
-    if (hasValue("set")) {
-      warning("Ignoring 'min' since 'set' is given.")
-      rm(min)
-    } else {
-      stopifnot(is.numeric(min), base::length(min) == 1, !is.na(min))
-    }
-  }
-  if (hasValue("max")) {
-    if (hasValue("set")) {
-      warning("Ignoring 'max' since 'set' is given.")
-      rm(max)
-    } else {
-      stopifnot(is.numeric(max), base::length(max) == 1, !is.na(max))
 
-      if (hasValue("min")) {
-        stopifnot(max >= min)
-      }
+    set <- unique(na.omit(set))
+  }
+
+  if (hasValue("min") && (!is.numeric(min) || base::length(min) != 1 ||
+                          is.na(min))) {
+    signal(
+      stackError(
+        "'min' must be a scalar.",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
+
+  if (hasValue("max")) {
+    if (!is.numeric(max) || base::length(max) != 1 || is.na(max)) {
+      signal(
+        stackError(
+          "'max' must be a scalar.",
+          base_class = "lazyTyperError"
+        )
+      )
+    }
+
+    if (hasValue("min") && min > max) {
+      signal(
+        stackError(
+          "'max' must be larger equal 'min'.",
+          "conflictingPropertyError",
+          base_class = "lazyTyperError"
+        )
+      )
     }
   }
-  if (hasValue("whole")) {
-    if (hasValue("set")) {
-      warning("Ignoring 'whole' since 'set' is given.")
-      rm(whole)
-    } else {
-      stopifnot(is.logical(whole), base::length(whole) == 1, !is.na(whole))
-    }
+
+
+
+  if (hasValue("whole") && (!is.logical(whole) || base::length(whole) != 1 ||
+                            is.na(whole))) {
+    signal(
+      stackError(
+        "'whole' must be a logical value.",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
   if (hasValue("pattern")) {
-    if (hasValue("set")) {
-      warning("Ignoring 'pattern' since 'set' is given.")
-      rm(pattern)
-    } else {
-      stopifnot(is.character(pattern), base::length(pattern) == 1)
-      grep(pattern, "")  # test the regular expression
+    if (!is.character(pattern) ||
+        base::length(pattern) != 1 ||
+        is.na(pattern)) {
+      signal(
+        stackError(
+          "'pattern' must be a character string.",
+          base_class = "lazyTyperError"
+        )
+      )
     }
+
+    contextualize(
+      grep(pattern, ""),
+      error = list(
+        message = "'pattern' is not a valid regular expression.",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
-  if (hasValue("allow_NA")) {
-    stopifnot(is.logical(allow_NA), base::length(allow_NA) == 1,
-              !is.na(allow_NA))
-    # if (!allow_NA && hasValue("set") && any(is.na(set))) {
-    #   warning("Ignoring 'allow_NA = FALSE' since 'set' contains 'NA'.")
-    #   rm(allow_NA)
-    # }
+  if (hasValue("allow_NA") && (!is.logical(allow_NA) ||
+                               base::length(allow_NA) != 1 ||
+                               is.na(allow_NA))) {
+    signal(
+      stackError(
+        "'allow_NA' must be a logical value.",
+        base_class = "lazyTyperError"
+      )
+    )
   }
-  if (hasValue("allow_NaN")) {
-    stopifnot(is.logical(allow_NaN), base::length(allow_NaN) == 1,
-              !is.na(allow_NaN))
-    # if (!allow_NaN && hasValue("set") && any(is.nan(set))) {
-    #   warning("Ignoring 'allow_NaN = FALSE' since 'set' contains 'NaN'.")
-    #   rm(allow_NaN)
-    # }
+
+  if (hasValue("allow_NaN") && (!is.logical(allow_NaN) ||
+                                base::length(allow_NaN) != 1 ||
+                                is.na(allow_NaN))) {
+    signal(
+      stackError(
+        "'allow_NaN' must be a logical value.",
+        base_class = "lazyTyperError"
+      )
+    )
   }
-  if (hasValue("allow_NULL")) {
-    stopifnot(is.logical(allow_NULL), base::length(allow_NULL) == 1,
-              !is.na(allow_NULL))
+
+  if (hasValue("allow_NULL") && (!is.logical(allow_NULL) ||
+                                 base::length(allow_NULL) != 1 ||
+                                 is.na(allow_NULL))) {
+    signal(
+      stackError(
+        "'allow_NULL' must be a logical value.",
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
   args2list()
