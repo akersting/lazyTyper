@@ -2,11 +2,17 @@
 checkProperties <- function(type, properties) {
   checkPropertiesFun <- getCheckFun(type, "checkPropertiesFun")
 
+  setErrorContext(
+    "invalidPropertyError",
+    paste0("Invalid property specification for type '", type, "'."),
+    base_class = "lazyTyperError"
+  )
+
   contextualize(
     match.call(checkPropertiesFun, as.call(c("dummyFUN", properties)),
                expand.dots = FALSE),
-    error = list(message = paste0("Invalid properties for type '", type, "'."),
-                 class = c("invalidPropertyError"),
+    error = list(message = "Unsupported properties set.",
+                 class = c("unsupportedPropertyError"),
                  base_class = "lazyTyperError")
   )
 
