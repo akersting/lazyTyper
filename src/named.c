@@ -13,3 +13,10 @@ SEXP setNamed(SEXP varname, SEXP env, SEXP named) {
   SET_NAMED(var, INTEGER(named)[0]);
   return R_NilValue;
 }
+
+SEXP evalAssign(SEXP expr, SEXP eval_env, SEXP rhs_name, SEXP rhs_env) {
+  SEXP rhs = eval(expr, eval_env);
+  Rf_defineVar(rhs_name, rhs, rhs_env);
+
+  return R_NilValue;
+}

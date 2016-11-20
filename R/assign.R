@@ -96,7 +96,10 @@ NULL
   }
 
   # do the actual assignment
-  rhs_value <- eval(call2assignment(cl, parent.frame()), envir = parent.frame())
+  cl[[1]] <- quote(`<-`)
+  cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
+  rhs <- NULL
+  evalAssign(cl, parent.frame())
 
   # do the type checking
   setErrorContext(
@@ -110,7 +113,7 @@ NULL
   )
   checkType(varname, env = parent.frame())
 
-  invisible(rhs_value)
+  invisible(rhs)  # rhs was set by evalAssign()
 }
 
 #' @usage x \%<-s\% value
@@ -145,7 +148,10 @@ NULL
   }
 
   # do the actual assignment
-  rhs_value <- eval(call2assignment(cl, parent.frame()), envir = parent.frame())
+  cl[[1]] <- quote(`<-`)
+  cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
+  rhs <- NULL
+  evalAssign(cl, parent.frame())
 
   # do the type checking
   setErrorContext(
@@ -170,7 +176,7 @@ NULL
     }
   )
 
-  invisible(rhs_value)
+  invisible(rhs)  # rhs was set by evalAssign()
 }
 
 #' @rdname typedAssignOps
@@ -178,20 +184,4 @@ NULL
 . <- function(rhs) {
   stop("This function must only be used as the right hand side of a typed ",
        "assignment.")
-}
-
-# convert a call of the form x %<-% .(rhs) or x %<-s% .(rhs) to x <- rhs_value,
-# where rhs_value is obtained by evaluating a promise to rhs in eval.env; this
-# is used to ensures correct results if rhs is an expression involving
-# "Functions to Access the Function Call Stack" (e.g. sys.nframe())
-call2assignment <- function(cl, eval.env) {
-  cl[[1]] <- quote(`<-`)
-
-  rhs <- cl[[3]][[2]]  # RHS is wrapped in .()
-  envir <- environment()
-  do.call(delayedAssign, list(x = "rhs", value = rhs, eval.env = eval.env,
-                              assign.env = envir))
-
-  cl[3] <- list(rhs)  # list() since RHS could be NULL
-  cl
 }
