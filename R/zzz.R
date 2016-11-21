@@ -24,8 +24,13 @@ types <- new.env(parent = emptyenv())
 
   registerAlias("logical", ".vector",
                 fixed = alist(type = "logical", min = , max = ,
-                              whole = , set = , pattern = , allow_NaN = ),
+                              whole = , set = , pattern = , allow_duplicates = ,
+                              allow_NaN = ),
                 defaults = list())
+
+  registerAlias("bool", "logical",
+                fixed = alist(length = 1, min_length = , max_length = ),
+                defaults = alist(allow_NA = FALSE))
 
   registerAlias("integer", "numeric",
                 fixed = alist(set = , whole = TRUE),
@@ -36,11 +41,13 @@ types <- new.env(parent = emptyenv())
                 defaults = list())
 
   registerAlias("scalar", "numeric",
-                fixed = alist(length = 1, min_length = , max_length = ),
+                fixed = alist(length = 1, min_length = , max_length = ,
+                              allow_duplicates = ),
                 defaults = alist(allow_NA = FALSE, allow_NaN = FALSE))
 
   registerAlias("string", "character",
-                fixed = alist(length = 1, min_length = , max_length = ),
+                fixed = alist(length = 1, min_length = , max_length = ,
+                              allow_duplicates = ),
                 defaults = alist(allow_NA = FALSE))
 }
 # nocov end

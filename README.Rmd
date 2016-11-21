@@ -159,17 +159,18 @@ A crossed out cell indicates that the respective property cannot be set for that
 
 The meaning of a completely empty or crossed out empty cell, i.e of an unset property, is given by the first row.
 
-|          Type |     length    |   min_length  |   max_length  |      set      |      min      |      max      |     whole     |    pattern    |    allow_NA   |   allow_NaN   | allow_NULL |       type      |
-|--------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:----------:|:---------------:|
-|   **.vector** | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _no/FALSE_ |      _N/A_      |
-|    **vector** |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |            |   ~~"vector"~~  |
-|   **logical** |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |               |    &mdash;    |            |  ~~"logical"~~  |
-|   **numeric** |               |               |               |               |               |               |               |    &mdash;    |               |               |            |  ~~"numeric"~~  |
-|   **integer** |               |               |               |    &mdash;    |               |               |    ~~TRUE~~   |    &mdash;    |               |               |            |  ~~"numeric"~~  |
-|     **count** |               |               |               |    &mdash;    |     ~~0~~     |               |    ~~TRUE~~   |    &mdash;    |               |               |            |  ~~"numeric"~~  |
-|    **scalar** |     ~~1~~     |    &mdash;    |    &mdash;    |               |               |               |               |    &mdash;    |     FALSE     |     FALSE     |            |  ~~"numeric"~~  |
-| **character** |               |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |               |               |    &mdash;    |            | ~~"character"~~ |
-|    **string** |     ~~1~~     |    &mdash;    |    &mdash;    |               |    &mdash;    |    &mdash;    |    &mdash;    |               |     FALSE     |    &mdash;    |            | ~~"character"~~ |
+|          Type |     length    |   min_length  |   max_length  |      set      |      min      |      max      |     whole     |    pattern    | allow_duplicates |    allow_NA   |   allow_NaN   | allow_NULL |       type      |
+|--------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:----------------:|:-------------:|:-------------:|:----------:|:---------------:|
+|   **.vector** | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ | _not checked_ |   _not checked_  | _not checked_ | _not checked_ | _no/FALSE_ |      _N/A_      |
+|    **vector** |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |                  |    &mdash;    |    &mdash;    |            |   ~~"vector"~~  |
+|   **logical** |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |      &mdash;     |               |    &mdash;    |            |  ~~"logical"~~  |
+|      **bool** |     ~~1~~     |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |    &mdash;    |      &mdash;     |     FALSE     |    &mdash;    |            |  ~~"logical"~~  |
+|   **numeric** |               |               |               |               |               |               |               |    &mdash;    |                  |               |               |            |  ~~"numeric"~~  |
+|   **integer** |               |               |               |    &mdash;    |               |               |    ~~TRUE~~   |    &mdash;    |                  |               |               |            |  ~~"numeric"~~  |
+|     **count** |               |               |               |    &mdash;    |     ~~0~~     |               |    ~~TRUE~~   |    &mdash;    |                  |               |               |            |  ~~"numeric"~~  |
+|    **scalar** |     ~~1~~     |    &mdash;    |    &mdash;    |               |               |               |               |    &mdash;    |      &mdash;     |     FALSE     |     FALSE     |            |  ~~"numeric"~~  |
+| **character** |               |               |               |               |    &mdash;    |    &mdash;    |    &mdash;    |               |                  |               |    &mdash;    |            | ~~"character"~~ |
+|    **string** |     ~~1~~     |    &mdash;    |    &mdash;    |               |    &mdash;    |    &mdash;    |    &mdash;    |               |      &mdash;     |     FALSE     |    &mdash;    |            | ~~"character"~~ |
 
 #### The Properties
 - `length`/`min_length`/`max_length`: the allowed exact/minimum/maximum length of the vector. If `length` is set then `min_length` and `max_length` cannot be set. `max_length` must be larger equal `min_length`.
@@ -177,6 +178,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 - `min`/`max`:  the allowed minimum/maximum value to be stored in the vector. `max` must be larger equal `min`.
 - `whole`: if `TRUE` only approximately whole numbers may be stored in the vector, i.e. the difference between all values and their nearest whole number must be less or equal `.Machine$double.eps^0.5`.
 - `pattern`: only allow values in the vector which this regular expression matches.
+- `allow_duplicates`: are duplicated values allowed in the vector? `NA` and `NaN` (for numeric vectors) are treated as incomparable.
 - `allow_NA`/`allow_NaN`: are `NA`/`NaN` values allowed in the vector? `allow_NA` here strictly refers only to `NA` (and not `NaN`), i.e. `any(is.na(x) & !is.nan(x))` is used to test this. If `set` contains `NA`/`NaN` then `allow_NA`/`allow_NaN` must not be `FALSE`.
 - `allow_NULL`: may the whole variable be `NULL`? Note that the default does not allow this, i.e. not setting `allow_NULL` it is equivalent to setting `allow_NULL = FALSE`.
 

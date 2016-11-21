@@ -193,10 +193,11 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <col width="7%" />
 <col width="7%" />
 <col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="6%" />
 <col width="8%" />
+<col width="7%" />
+<col width="7%" />
+<col width="5%" />
+<col width="7%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -209,6 +210,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <th align="center">max</th>
 <th align="center">whole</th>
 <th align="center">pattern</th>
+<th align="center">allow_duplicates</th>
 <th align="center">allow_NA</th>
 <th align="center">allow_NaN</th>
 <th align="center">allow_NULL</th>
@@ -218,6 +220,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <tbody>
 <tr class="odd">
 <td align="right"><strong>.vector</strong></td>
+<td align="center"><em>not checked</em></td>
 <td align="center"><em>not checked</em></td>
 <td align="center"><em>not checked</em></td>
 <td align="center"><em>not checked</em></td>
@@ -241,6 +244,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center">—</td>
 <td align="center">—</td>
 <td align="center">—</td>
+<td align="center"></td>
 <td align="center">—</td>
 <td align="center">—</td>
 <td align="center"></td>
@@ -256,12 +260,29 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center">—</td>
 <td align="center">—</td>
 <td align="center">—</td>
+<td align="center">—</td>
 <td align="center"></td>
 <td align="center">—</td>
 <td align="center"></td>
 <td align="center"><del>“logical”</del></td>
 </tr>
 <tr class="even">
+<td align="right"><strong>bool</strong></td>
+<td align="center"><del>1</del></td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">FALSE</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center"><del>“logical”</del></td>
+</tr>
+<tr class="odd">
 <td align="right"><strong>numeric</strong></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -274,9 +295,10 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“numeric”</del></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right"><strong>integer</strong></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -289,9 +311,10 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“numeric”</del></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="right"><strong>count</strong></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -304,9 +327,10 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“numeric”</del></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right"><strong>scalar</strong></td>
 <td align="center"><del>1</del></td>
 <td align="center">—</td>
@@ -316,12 +340,13 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"></td>
 <td align="center">—</td>
+<td align="center">—</td>
 <td align="center">FALSE</td>
 <td align="center">FALSE</td>
 <td align="center"></td>
 <td align="center"><del>“numeric”</del></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="right"><strong>character</strong></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -332,11 +357,12 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center">—</td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center">—</td>
 <td align="center"></td>
 <td align="center"><del>“character”</del></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="right"><strong>string</strong></td>
 <td align="center"><del>1</del></td>
 <td align="center">—</td>
@@ -346,6 +372,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center">—</td>
 <td align="center">—</td>
 <td align="center"></td>
+<td align="center">—</td>
 <td align="center">FALSE</td>
 <td align="center">—</td>
 <td align="center"></td>
@@ -361,6 +388,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 -   `min`/`max`: the allowed minimum/maximum value to be stored in the vector. `max` must be larger equal `min`.
 -   `whole`: if `TRUE` only approximately whole numbers may be stored in the vector, i.e. the difference between all values and their nearest whole number must be less or equal `.Machine$double.eps^0.5`.
 -   `pattern`: only allow values in the vector which this regular expression matches.
+-   `allow_duplicates`: are duplicated values allowed in the vector? `NA` and `NaN` (for numeric vectors) are treated as incomparable.
 -   `allow_NA`/`allow_NaN`: are `NA`/`NaN` values allowed in the vector? `allow_NA` here strictly refers only to `NA` (and not `NaN`), i.e. `any(is.na(x) & !is.nan(x))` is used to test this. If `set` contains `NA`/`NaN` then `allow_NA`/`allow_NaN` must not be `FALSE`.
 -   `allow_NULL`: may the whole variable be `NULL`? Note that the default does not allow this, i.e. not setting `allow_NULL` it is equivalent to setting `allow_NULL = FALSE`.
 

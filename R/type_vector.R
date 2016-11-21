@@ -1,7 +1,7 @@
 # nocov start
 checkPropertiesFun.vector <- function(length, min_length, max_length, set, min,
-                                      max, whole, pattern, allow_NA,
-                                      allow_NaN, allow_NULL, type) {
+                                      max, whole, pattern, allow_duplicates,
+                                      allow_NA, allow_NaN, allow_NULL, type) {
   # get fixed values
   list2env(as.list(parent.env(environment()), all.names = TRUE),
            envir = environment())
@@ -199,6 +199,17 @@ checkPropertiesFun.vector <- function(length, min_length, max_length, set, min,
     )
   }
 
+  if (hasValue("allow_duplicates") && (!is.logical(allow_duplicates) ||
+                             base::length(allow_duplicates) != 1 ||
+                             is.na(allow_duplicates))) {
+    signal(
+      stackError(
+        "'allow_duplicates' must be a logical value.",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
+
   if (hasValue("allow_NA") && (!is.logical(allow_NA) ||
                                base::length(allow_NA) != 1 ||
                                is.na(allow_NA))) {
@@ -237,8 +248,8 @@ checkPropertiesFun.vector <- function(length, min_length, max_length, set, min,
 
 #' @importFrom stats na.omit
 checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
-                                max, whole, pattern, allow_NA, allow_NaN,
-                                allow_NULL, type) {
+                                max, whole, pattern, allow_duplicates, allow_NA,
+                                allow_NaN, allow_NULL, type) {
   if (is.null(x)) {
     if (!hasValue("allow_NULL") || !allow_NULL) {
       signal(
@@ -371,6 +382,18 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
         )
       )
     }
+  }
+
+  if (hasValue("allow_duplicates") && !allow_duplicates &&
+      ((is.numeric(x) && anyDuplicated(x, incomparables = c(NA, NaN))) ||
+      (!is.numeric(x) && anyDuplicated(x, incomparables = NA)))) {
+    signal(
+      stackError(
+        "The elements of the variable are not unique.",
+        c("invalidPropertyValueError"),
+        base_class = "lazyTyperError"
+      )
+    )
   }
 
   if (hasValue("allow_NA") && !allow_NA && any(is.na(x) & !is.nan(x))) {
