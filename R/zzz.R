@@ -8,6 +8,11 @@ types <- new.env(parent = emptyenv())
 
   registerType(".vector", checkPropertiesFun.vector, checkTypeFun.vector)
 
+  registerAlias("vector", ".vector",
+                fixed = alist(type = "vector", set = , min = , max = ,
+                              whole = , pattern = , allow_NA = , allow_NaN = ),
+                defaults = list())
+
   registerAlias("numeric", ".vector",
                 fixed = alist(type = "numeric", pattern = ),
                 defaults = list())
