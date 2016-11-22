@@ -4,9 +4,9 @@ lazyTyper
 
 [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip) [![Build Status](https://travis-ci.org/akersting/lazyTyper.svg?branch=develop)](https://travis-ci.org/akersting/lazyTyper) [![Coverage Status](https://codecov.io/github/akersting/lazyTyper/coverage.svg?branch=develop)](https://codecov.io/github/akersting/lazyTyper) [![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-lazyTyper adds the concept of strong typing to R. Before its first use, a variable can be declared to be of a specific type. Existing variables can be casted to a specific type. Assigning values of the wrong type to such typed variables will throw an error.
+lazyTyper adds the concepts of strong and explicit typing to R. Before its first use, a variable can be declared to be of a specific type. Existing variables can be casted to a specific type. Assigning values of the wrong type to such typed variables will throw an error.
 
-In addition to pure type information, it is also possible to associate additional properties with a variable, e.g. the length of a vector. Such properties are also validated when the variable is modified.
+In addition to pure type information, it is also possible to associate additional properties with a variable, e.g. the length of a vector and whether it may contain NAs or not. Such properties are also validated when the variable is modified.
 
 Installation
 ------------
