@@ -1,4 +1,4 @@
-#' Lazy but (Very) Strong Typing and Constants for R
+#' Strong and Explicit Typing for R
 #'
 #' @docType package
 #' @name lazyTyper

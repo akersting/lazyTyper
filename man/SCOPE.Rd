@@ -31,6 +31,12 @@ at the end of it.
 \note{
 Scopes can be nested.
 }
+\section{RStudio Addin}{
+ This package ships with an addin for RStudio (>=
+  v0.99.1111) for quickly inserting \code{SCOPE \%->\% \{\}}. Go to Tools >
+  Addins > Browse Addins... > Keyboard Shortcuts... to assign a keyboard
+  shortcut for this.
+}
 \examples{
 declare(a, "numeric")
 SCOPE \%->\% {

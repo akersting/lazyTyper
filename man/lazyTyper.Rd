@@ -4,8 +4,8 @@
 \name{lazyTyper}
 \alias{lazyTyper}
 \alias{lazyTyper-package}
-\title{Lazy but (Very) Strong Typing and Constants for R}
+\title{Strong and Explicit Typing for R}
 \description{
-Lazy but (Very) Strong Typing and Constants for R
+Strong and Explicit Typing for R
 }
 

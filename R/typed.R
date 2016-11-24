@@ -50,14 +50,14 @@
 #'   \code{x}).
 #'
 #'   For \code{is.valid} either \code{TRUE} or \code{FALSE}, the latter with an
-#'   additional attribute: "error" (a character vector describing why the
-#'   variable is not valid). Calling \code{is.valid} on an untyped variable will
-#'   always return \code{FALSE}.
+#'   additional attribute: "errors" (a list of condition objects indicating why
+#'   the variable is not valid). Calling \code{is.valid} on an untyped variable
+#'   is always an error.
 #'
-#' @seealso \code{\link{\%<-\%}} for securely assigning to a typed variable,
-#'   \code{g} for securely getting the value of a typed variable,
-#'   \code{\link{remove}}  for a replacement for base \code{\link[base]{remove}}
-#'   with support for typed variables
+#' @seealso \code{\link{\%<-\%}} and \code{\link{\%<-s\%}} for securely
+#'   assigning to a typed variable, \code{\link{g}} for securely getting the
+#'   value of a typed variable, \code{\link{remove}}  for a replacement for base
+#'   \code{\link[base]{remove}} with support for typed variables
 #'
 #' @examples
 #' declare(var, "character", length = 2)

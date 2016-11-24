@@ -81,7 +81,7 @@ registerAlias <- function(alias, type, fixed, defaults, env = types) {
 #'  finally be stored. This set can be different from the original arguments to
 #'  this function, e.g. because one of two inconsistent properties was removed.
 #'  There is the helper function \code{\link{args2list}}, which returns the
-#'  *current* values of the arguments of the calling function as a list.
+#'  \emph{current} values of the arguments of the calling function as a list.
 #'@param checkTypeFun a function used for checking whether a variable is of type
 #'  \code{type}. This function must accept \code{x}, which is the variable to
 #'  test, as well as all the additional properties supported by this type as
