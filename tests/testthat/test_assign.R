@@ -20,6 +20,7 @@ test_that("assign works as expected", {
   expect_equal(a, "a")
   expect_silent(a %<-s% .(2))
   expect_equal(a, 2)
+  expect_error(a %<-% .(quote(1:10)))
 })
 
 test_that("assign works as expected for complex expressions", {

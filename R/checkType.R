@@ -10,7 +10,7 @@ checkType <- function(varname, env) {
                                 base_class = "lazyTyperError")
 
     do.call(lazyTyperList[["checkTypeFun"]],
-            c(x = list(get(varname, envir = env, inherits = FALSE)),
+            c(x = list(enquote(get(varname, envir = env, inherits = FALSE))),
               lazyTyperList[["properties"]]))
   } else {
     signal(
