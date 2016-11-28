@@ -20,3 +20,12 @@ SEXP evalAssign(SEXP expr, SEXP eval_env, SEXP rhs_name, SEXP rhs_env) {
 
   return R_NilValue;
 }
+
+SEXP evalPromiseCode(SEXP promise_name, SEXP promise_env, SEXP reference_name,
+                     SEXP reference_env) {
+  SEXP promise = findVarInFrame3(promise_env, promise_name, TRUE);
+  SEXP reference = eval(PRCODE(promise), PRENV(promise));
+  Rf_defineVar(reference_name, reference, reference_env);
+
+  return R_NilValue;
+}

@@ -19,3 +19,12 @@ evalAssign <- function(expr, eval_env, rhs_name = "rhs",
         PACKAGE = "lazyTyper")
 }
 
+# evaluate the code of a promise in the appropriate environment and create
+# a reference to the return value in the specified env without increasing
+# NAMED
+evalPromiseCode <- function(promise_name, promise_env = parent.frame(),
+                            reference_name = promise_name,
+                            reference_env = promise_env) {
+  .Call("evalPromiseCode", as.symbol(promise_name), promise_env,
+        as.symbol(reference_name), reference_env, PACKAGE = "lazyTyper")
+}
