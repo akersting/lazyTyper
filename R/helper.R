@@ -117,7 +117,7 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
       if (.single && length(x) != 1) {
         signal(
           stackError(
-            paste0("If '.character = TRUE', 'x' must be a character string, ",
+            paste0("'x' is not a character string, ",
                    "i.e. a character vector of length 1."),
             base_class = "lazyTyperError"
           )
@@ -127,7 +127,7 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
     } else {
       signal(
         stackError(
-          "If '.character' is TRUE, x must be a character vector.",
+          "'x' is not a character vector.",
           base_class = "lazyTyperError"
         )
       )
@@ -141,7 +141,7 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
         )
       )
     }
-    if (!is.name(sx)) {
+    if (!is.name(sx) && !is.character(sx)) {
       signal(
         stackError(
           paste0("Invalid variable name: ", deparse(sx)),
