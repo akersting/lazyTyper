@@ -184,19 +184,20 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 
 <table style="width:100%;">
 <colgroup>
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
 <col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="8%" />
-<col width="7%" />
-<col width="7%" />
+<col width="6%" />
+<col width="6%" />
 <col width="5%" />
+<col width="6%" />
 <col width="7%" />
 </colgroup>
 <thead>
@@ -214,6 +215,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <th align="center">allow_NA</th>
 <th align="center">allow_NaN</th>
 <th align="center">allow_NULL</th>
+<th align="center">allow_missing</th>
 <th align="center">type</th>
 </tr>
 </thead>
@@ -232,6 +234,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"><em>not checked</em></td>
 <td align="center"><em>not checked</em></td>
 <td align="center"><em>no/FALSE</em></td>
+<td align="center"><em>no/FALSE</em></td>
 <td align="center"><em>N/A</em></td>
 </tr>
 <tr class="even">
@@ -247,6 +250,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center">—</td>
 <td align="center">—</td>
+<td align="center"></td>
 <td align="center"></td>
 <td align="center"><del>“vector”</del></td>
 </tr>
@@ -264,6 +268,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center">—</td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“logical”</del></td>
 </tr>
 <tr class="even">
@@ -280,6 +285,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center">FALSE</td>
 <td align="center">—</td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“logical”</del></td>
 </tr>
 <tr class="odd">
@@ -292,6 +298,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"></td>
 <td align="center">—</td>
+<td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -312,6 +319,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“numeric”</del></td>
 </tr>
 <tr class="odd">
@@ -324,6 +332,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"><del>TRUE</del></td>
 <td align="center">—</td>
+<td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
@@ -344,6 +353,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center">FALSE</td>
 <td align="center">FALSE</td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“numeric”</del></td>
 </tr>
 <tr class="odd">
@@ -359,6 +369,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center"></td>
 <td align="center"></td>
 <td align="center">—</td>
+<td align="center"></td>
 <td align="center"></td>
 <td align="center"><del>“character”</del></td>
 </tr>
@@ -376,6 +387,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 <td align="center">FALSE</td>
 <td align="center">—</td>
 <td align="center"></td>
+<td align="center"></td>
 <td align="center"><del>“character”</del></td>
 </tr>
 </tbody>
@@ -391,6 +403,7 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 -   `allow_duplicates`: are duplicated values allowed in the vector? `NA` and `NaN` (for numeric vectors) are treated as incomparable.
 -   `allow_NA`/`allow_NaN`: are `NA`/`NaN` values allowed in the vector? `allow_NA` here strictly refers only to `NA` (and not `NaN`), i.e. `any(is.na(x) & !is.nan(x))` is used to test this. If `set` contains `NA`/`NaN` then `allow_NA`/`allow_NaN` must not be `FALSE`.
 -   `allow_NULL`: may the whole variable be `NULL`? Note that the default does not allow this, i.e. not setting `allow_NULL` it is equivalent to setting `allow_NULL = FALSE`.
+-   `allow_missing`: may the variable be a missing argument, i.e. identical to the empty name? This is relevant when casting a formal argument of a function. Note that the default does not allow this, i.e. not setting `allow_missing` it is equivalent to setting `allow_missing = FALSE`.
 
 Registering Custom Types
 ------------------------

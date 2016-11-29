@@ -1,7 +1,8 @@
 # nocov start
 checkPropertiesFun.vector <- function(length, min_length, max_length, set, min,
                                       max, whole, pattern, allow_duplicates,
-                                      allow_NA, allow_NaN, allow_NULL, type) {
+                                      allow_NA, allow_NaN, allow_NULL,
+                                      allow_missing, type) {
   # get fixed values
   list2env(as.list(parent.env(environment()), all.names = TRUE),
            envir = environment())
@@ -243,13 +244,37 @@ checkPropertiesFun.vector <- function(length, min_length, max_length, set, min,
     )
   }
 
+  if (hasValue("allow_missing") && (!is.logical(allow_missing) ||
+                                 base::length(allow_missing) != 1 ||
+                                 is.na(allow_missing))) {
+    signal(
+      stackError(
+        "'allow_missing' must be a logical value.",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
+
   args2list()
 }
 
 #' @importFrom stats na.omit
 checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
                                 max, whole, pattern, allow_duplicates, allow_NA,
-                                allow_NaN, allow_NULL, type) {
+                                allow_NaN, allow_NULL, allow_missing, type) {
+  if (identical(x, quote(expr = ))) {
+    if (!hasValue("allow_missing") || !allow_missing) {
+      signal(
+        stackError(
+          paste0("The variable is a missing argument, i.e. it is identical to ",
+                 "the empty name."),
+          base_class = "lazyTyperError"
+        )
+      )
+    }
+    return(invisible())  # X is missing -> we are done
+  }
+
   if (is.null(x)) {
     if (!hasValue("allow_NULL") || !allow_NULL) {
       signal(

@@ -29,3 +29,14 @@ SEXP evalPromiseCode(SEXP promise_name, SEXP promise_env, SEXP reference_name,
 
   return R_NilValue;
 }
+
+SEXP simpleGet(SEXP varname, SEXP env) {
+  SEXP var = findVarInFrame3(env, varname, TRUE);
+  if (TYPEOF(var) == PROMSXP) {
+    PROTECT(var);
+    var = eval(var, env);
+    UNPROTECT(1);
+  }
+
+  return var;
+}

@@ -23,7 +23,7 @@ assertType <- function(expr, type, ...) {
     "Failed to assert the type of the expression.",
     base_class = "lazyTyperError"
   )
-  value <- NULL
+
   assignToLazyTyperEnv("value", type = type, properties = list(...),
                        env = environment())
 
@@ -42,5 +42,5 @@ assertType <- function(expr, type, ...) {
   )
   checkType("value", environment())
 
-  value
+  simpleGet("value")
 }

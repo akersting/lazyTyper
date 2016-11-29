@@ -28,3 +28,7 @@ evalPromiseCode <- function(promise_name, promise_env = parent.frame(),
   .Call("evalPromiseCode", as.symbol(promise_name), promise_env,
         as.symbol(reference_name), reference_env, PACKAGE = "lazyTyper")
 }
+
+simpleGet <- function(varname, env = parent.frame()) {
+  .Call("simpleGet", as.symbol(varname), env, PACKAGE = "lazyTyper")
+}

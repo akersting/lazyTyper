@@ -133,7 +133,7 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
       )
     }
   } else {
-    if (missing(x)) {
+    if (identical(sx, quote(expr = ))) {
       signal(
         stackError(
           "Argument 'x' is missing (with no default).",

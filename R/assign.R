@@ -113,7 +113,7 @@ NULL
   )
   checkType(varname, env = parent.frame())
 
-  invisible(rhs)  # rhs was set by evalAssign()
+  invisible(simpleGet("rhs"))  # rhs was set by evalAssign()
 }
 
 #' @usage x \%<-s\% value
@@ -176,7 +176,7 @@ NULL
     }
   )
 
-  invisible(rhs)  # rhs was set by evalAssign()
+  invisible(simpleGet("rhs"))  # rhs was set by evalAssign()
 }
 
 #' @rdname typedAssignOps
