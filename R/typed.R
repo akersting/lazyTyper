@@ -39,7 +39,10 @@
 #'   \code{is.valid} tests whether the current value of \code{x} is valid given
 #'   it type.
 #'
-#' @return For \code{untype} an invisible character vector with the names of the
+#' @return For \code{declare} the empty name (invisibly) and for \code{cast} and
+#'   \code{const} \code{NULL} (also invisibly).
+#'
+#'   For \code{untype} an invisible character vector with the names of the
 #'   variables which were to be untyped. This allows shorthands of the following
 #'   form for redeclaring/recasting variables: \code{cast(untype(var),
 #'   "numeric", .character = TRUE)}.
@@ -223,7 +226,7 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
     }
   }
 
-  invisible(NULL)
+  invisible(quote(expr = ))
 }
 
 #' @rdname typed

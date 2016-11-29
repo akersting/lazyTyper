@@ -14,7 +14,7 @@ test_that("scopes can be nested", {
       b <- 782398
       declare(d, "character")
 
-      eval(declare(e, "character"))
+      evalq(declare(e, "character"))
       e <- "467765"
     }
     declare(d, "character")

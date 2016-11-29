@@ -47,7 +47,10 @@ operate on or a character vector with the names of objects to operate on.
 modified?}
 }
 \value{
-For \code{untype} an invisible character vector with the names of the
+For \code{declare} the empty name (invisibly) and for \code{cast} and
+  \code{const} \code{NULL} (also invisibly).
+
+  For \code{untype} an invisible character vector with the names of the
   variables which were to be untyped. This allows shorthands of the following
   form for redeclaring/recasting variables: \code{cast(untype(var),
   "numeric", .character = TRUE)}.
