@@ -29,9 +29,9 @@ is.valid(x)
 
 \item{type}{the desired type of \code{x} (as a character string).}
 
-\item{...}{further properties of \code{x} to guarantee (as named arguments).
-The availability of additional properties depends on \code{type}. Both
-positional and partial matching are used on these arguments.}
+\item{...}{further properties of \code{x} to guarantee. The availability of
+additional properties depends on \code{type}. Both positional and partial
+matching are used on these arguments.}
 
 \item{env}{the environment in which to look for \code{x} / where \code{x}
 should be declared. Defaults to the current environment.}
@@ -98,7 +98,7 @@ declare(var, "character", length = 2)
 var \%<-\% .(letters[1:2])
 
 \dontrun{
-var \%<-\% c("a", "b", "c")  # error: wrong length}
+var \%<-\% .(c("a", "b", "c"))  # error: wrong length}
 
 }
 \seealso{

@@ -13,8 +13,8 @@
 #'
 #' @return x
 #'
-#' @seealso \link{typed}, \code{\link{\%<-\%}} for securely assigning to a typed
-#'   variable
+#' @seealso \link{typed}, \code{\link{\%<-\%}} and \code{\link{\%<-s\%}} for
+#'   securely assigning to a typed variable
 #'
 #' @export
 g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {

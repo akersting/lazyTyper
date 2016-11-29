@@ -26,7 +26,7 @@ Return the value of a typed variable if it is valid, otherwise throw an
 error.
 }
 \seealso{
-\link{typed}, \code{\link{\%<-\%}} for securely assigning to a typed
-  variable
+\link{typed}, \code{\link{\%<-\%}} and \code{\link{\%<-s\%}} for
+  securely assigning to a typed variable
 }
 

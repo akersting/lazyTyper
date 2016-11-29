@@ -5,9 +5,9 @@
 #'
 #' @param x variable to be typed or tested.
 #' @param type the desired type of \code{x} (as a character string).
-#' @param ... further properties of \code{x} to guarantee (as named arguments).
-#'   The availability of additional properties depends on \code{type}. Both
-#'   positional and partial matching are used on these arguments.
+#' @param ... further properties of \code{x} to guarantee. The availability of
+#'   additional properties depends on \code{type}. Both positional and partial
+#'   matching are used on these arguments.
 #' @param env the environment in which to look for \code{x} / where \code{x}
 #'   should be declared. Defaults to the current environment.
 #' @param inherits a logical value indicating if the enclosing frames of the
@@ -67,7 +67,7 @@
 #' var %<-% .(letters[1:2])
 #'
 #' \dontrun{
-#' var %<-% c("a", "b", "c")  # error: wrong length}
+#' var %<-% .(c("a", "b", "c"))  # error: wrong length}
 #'
 #' @name typed
 NULL
