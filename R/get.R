@@ -62,5 +62,6 @@ g <- function(x, env = parent.frame(), inherits = FALSE, .character = FALSE) {
 
   checkType(varname, env = this_env)
 
-  get(varname, envir = this_env, inherits = FALSE)
+  # we must use simpleGet() since the variable might be the empty name
+  simpleGet(varname, this_env)
 }
