@@ -10,7 +10,7 @@
 #'   \code{type}. Both positional and partial matching are used on these
 #'   arguments.
 #'
-#' @return expr (evaluated).
+#' @return expr (evaluated and invisibly).
 #'
 #' @export
 assertType <- function(expr, type, ...) {
@@ -42,5 +42,5 @@ assertType <- function(expr, type, ...) {
   )
   checkType("value", environment())
 
-  simpleGet("value")
+  invisible(simpleGet("value"))
 }

@@ -18,7 +18,7 @@ guarantee. The availability of additional properties depends on
 arguments.}
 }
 \value{
-expr (evaluated).
+expr (evaluated and invisibly).
 }
 \description{
 Assert that the return value of an expression is of the desired type.
