@@ -18,7 +18,7 @@
 #'   Addins > Browse Addins... > Keyboard Shortcuts... to assign a keyboard
 #'   shortcut for this.
 #'
-#' @return whatever \code{expr} returns.
+#' @return whatever \code{expr} returns (invisibly).
 #'
 #' @name SCOPE
 #'
@@ -55,7 +55,7 @@ NULL
                             env = parent.frame(), .character = TRUE))
   })
 
-  expr
+  invisible(evalPromiseCode("expr"))
 }
 
 #' @rdname SCOPE

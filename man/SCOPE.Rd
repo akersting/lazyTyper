@@ -22,7 +22,7 @@ RStudio.}
 untyped and deleted at the end of the scope.}
 }
 \value{
-whatever \code{expr} returns.
+whatever \code{expr} returns (invisibly).
 }
 \description{
 Variables which are \code{\link{declare}}d in a scope are untyped and deleted
