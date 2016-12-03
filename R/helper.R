@@ -152,3 +152,7 @@ getVarNames <- function(x, sx, .character = FALSE, .single = FALSE) {
     return(as.character(sx))
   }
 }
+
+`%\\%` <- function(x, y) {
+  paste0(x, y)
+}
