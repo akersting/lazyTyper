@@ -4,7 +4,7 @@ checkType <- function(varname, env) {
 
   if (!is.null(lazyTyperList)) {
     named <- getNamed(varname, env)
-    on.exit(setNamed(varname, env, named))
+    on.exit(setNamed(varname, named, env))
 
     setErrorContext("invalidTypeError",
                                 base_class = "lazyTyperError")

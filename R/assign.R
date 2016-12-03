@@ -98,8 +98,7 @@ NULL
   # do the actual assignment
   cl[[1]] <- quote(`<-`)
   cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
-  rhs <- NULL
-  evalAssign(cl, parent.frame())
+  eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame())
 
   # do the type checking
   setErrorContext(
@@ -113,7 +112,9 @@ NULL
   )
   checkType(varname, env = parent.frame())
 
-  invisible(simpleGet("rhs"))  # rhs was set by evalAssign()
+  # rhs was set by eval2Reference()
+  # we must use simpleGet() since rhs might be the empty name
+  invisible(simpleGet("rhs"))
 }
 
 #' @usage x \%<-s\% value
@@ -150,8 +151,7 @@ NULL
   # do the actual assignment
   cl[[1]] <- quote(`<-`)
   cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
-  rhs <- NULL
-  evalAssign(cl, parent.frame())
+  eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame())
 
   # do the type checking
   setErrorContext(
@@ -176,7 +176,9 @@ NULL
     }
   )
 
-  invisible(simpleGet("rhs"))  # rhs was set by evalAssign()
+  # rhs was set by eval2Reference()
+  # we must use simpleGet() since rhs might be the empty name
+  invisible(simpleGet("rhs"))
 }
 
 #' @rdname typedAssignOps
