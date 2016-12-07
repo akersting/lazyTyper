@@ -1,37 +1,3 @@
-#' Does an Argument (or Another Object) Exist and have a Value?
-#'
-#' This function returns \code{FALSE} if an object with the name \code{x} does
-#' not exist or if it is identical to the empty name, which is used to represent
-#' \emph{missing arguments} to a function \emph{without a default value}.
-#' Otherwise it returns \code{TRUE}.
-#'
-#' @param x the name of the object to test as a character string.
-#' @param envir the environment of the object to test. Defaults to the calling
-#'   frame of this function. \code{envir} must not be the global environment.
-#'
-#' @seealso \code{\link[base]{exists}}, which returns \code{TRUE} also for
-#'   missing arguments and \code{\link[base]{missing}}, which returns
-#'   \code{TRUE} also for missing arguments which have a default value.
-#'
-#' @keywords internal
-#' @export
-hasValue <- function(x, envir = parent.frame()) {
-  # substitute (used below) behaves differently in the global environment
-  if (identical(envir, .GlobalEnv)) {
-    stop("'hasValue' cannot be used to test objects in the global environment.")
-  }
-  stopifnot(is.character(x), length(x) == 1, !is.na(x), nchar(x) > 0)
-
-  if (!exists(x, envir = envir, inherits = FALSE)) {
-    return(FALSE)
-  }
-
-  # `` in case x does not contain a proper name
-  expr <- paste0("!identical(substitute(`", x, "`), quote(expr = ))")
-  expr <- parse(text = expr)
-  eval(expr, envir = envir)
-}
-
 #' Get the Current Values of the Formal Arguments of a Function as a List
 #'
 #' This function returns the \emph{current} values of the formal arguments of
@@ -90,7 +56,7 @@ args2list <- function(include_ellipsis = TRUE, simplify = TRUE,
     formal_args <- lapply(formal_args, function(arg) quote(expr = ))
 
     formal_arg_has_value <- unlist(lapply(names(formal_args), hasValue,
-                                          envir = parent.frame()))
+                                          env = parent.frame()))
     formal_args_with_value <- mget(names(formal_args)[formal_arg_has_value],
                                    envir = parent.frame())
     if (include_missing) {
