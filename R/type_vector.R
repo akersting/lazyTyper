@@ -86,19 +86,8 @@ checkPropertiesFun.vector <- function(length, min_length, max_length, set, min,
       )
 
     }
-    correct_type <- switch(
-      type,
-      logical = {
-        is.null(dim(set)) && is.logical(set)
-      },
-      numeric = {
-        is.null(dim(set)) && is.numeric(set)
-      },
-      character = {
-        is.null(dim(set)) && is.character(set)
-      }
-    )
 
+    correct_type <- iMode(set) == type
     if (!correct_type) {
       signal(
         stackError(
@@ -287,26 +276,20 @@ checkTypeFun.vector <- function(x, length, min_length, max_length, set, min,
     return(invisible())  # X is NULL -> we are done
   }
 
-  correct_type <- switch(
-    type,
-    logical = {
-      is.null(dim(x)) && is.logical(x)
-    },
-    numeric = {
-      is.null(dim(x)) && is.numeric(x)
-    },
-    character = {
-      is.null(dim(x)) && is.character(x)
-    },
-    vector = {
-      is.vector(x)
-    }
-  )
+  correct_type <- if (iMode(x) == type) {
+    TRUE
+  } else if (type == "vector" && !is.array(x) &&
+             (is.logical(x) || is.numeric(x) || is.complex(x) ||
+              is.character(x) || is.raw(x) || is.factor(x))) {
+    TRUE
+  } else {
+    FALSE
+  }
   if (!correct_type) {
     signal(
       stackError(
         paste0("The variable has the wrong type. Expected: ", type,
-               ", actual: ", mode(x), "."),
+               ", actual: ", iMode(x), "."),
         base_class = "lazyTyperError"
       )
     )
