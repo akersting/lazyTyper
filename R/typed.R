@@ -220,7 +220,7 @@ declare <- function(x, type, ..., env = parent.frame(), .character = FALSE) {
   if (sys.nframe() >= 3) {
     scope_frame <- sys.frame(-2)
     scope <- attr(scope_frame, "lazyTyper_scope", exact = TRUE)
-    if (!is.null(scope) && identical(env, parent.frame())) {
+    if (isTRUE(scope) && identical(env, parent.frame())) {
       attr(scope_frame, "lazyTyper_vars2remove") <-
         c(attr(scope_frame, "lazyTyper_vars2remove"), varnames)
     }
@@ -260,7 +260,7 @@ untype <- function(x, env = parent.frame(), inherits = FALSE,
     for (i in rev(seq_len(sys.nframe() - 1))) {
       scope_frame <- sys.frame(i)
       scope <- attr(scope_frame, "lazyTyper_scope", exact = TRUE)
-      if (!is.null(scope) && identical(this_env, sys.frame(sys.parents()[i]))) {
+      if (isTRUE(scope) && identical(this_env, sys.frame(sys.parents()[i]))) {
         attr(scope_frame, "lazyTyper_vars2remove") <-
           attr(scope_frame, "lazyTyper_vars2remove")[
             attr(scope_frame, "lazyTyper_vars2remove") != varname
