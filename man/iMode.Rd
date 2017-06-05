@@ -27,4 +27,3 @@ iMode(x)
 \description{
 Get the high-level mode/type of an object.
 }
-

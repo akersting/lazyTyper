@@ -23,4 +23,3 @@ expr (evaluated and invisibly).
 \description{
 Assert that the return value of an expression is of the desired type.
 }
-

@@ -40,4 +40,3 @@ See `Details` in base
 \seealso{
 \link{typed}
 }
-

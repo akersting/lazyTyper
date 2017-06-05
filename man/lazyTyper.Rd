@@ -8,4 +8,3 @@
 \description{
 Strong and Explicit Typing for R
 }
-

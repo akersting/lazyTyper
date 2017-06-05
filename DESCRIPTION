@@ -1,7 +1,7 @@
 Package: lazyTyper
 Type: Package
 Title: Strong and Explicit Typing for R
-Version: 0.0.0.9009
+Version: 0.0.0.9010
 Date: 2017-06-05
 Authors@R: c(person("Andreas", "Kersting", role = c("aut", "cre"),
     email = "andreas@akersting.de"), person("R Core team", role = "ctb",
@@ -19,7 +19,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Suggests: testthat,
     rstudioapi,
     covr,

@@ -22,4 +22,3 @@ It used R's standard scoping rules, with the exception that it does not
 recurse beyond the global environment into the packages' namespaces.
 }
 \keyword{internal}
-

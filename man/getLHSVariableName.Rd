@@ -26,4 +26,3 @@ lhs <- assignment[[2]]  # left-hand side of assignment
 lazyTyper:::getLHSVariableName(lhs)  # "var"
 }
 \keyword{internal}
-

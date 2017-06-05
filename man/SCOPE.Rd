@@ -33,6 +33,7 @@ Scopes can be nested.
   Addins > Browse Addins... > Keyboard Shortcuts... to assign a keyboard
   shortcut for this.
 }
+
 \examples{
 declare(a, "numeric")
 SCOPE \%->\% {
@@ -46,5 +47,3 @@ d
 exists("b")
 is.typed(b)
 }
-\keyword{datasets}
-

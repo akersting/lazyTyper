@@ -28,4 +28,3 @@ If \code{x} is a promise \code{TRUE} is returned independently of the
   \code{TRUE} also for missing arguments which have a default value.
 }
 \keyword{internal}
-

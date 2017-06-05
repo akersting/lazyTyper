@@ -29,4 +29,3 @@ error.
 \link{typed}, \code{\link{\%<-\%}} and \code{\link{\%<-s\%}} for
   securely assigning to a typed variable
 }
-

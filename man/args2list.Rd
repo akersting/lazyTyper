@@ -49,4 +49,3 @@ f()  # a == 7, c == 3
 f(a = 1, b = 2, c = 4, 5)  # result unnamed for ellipsis
 }
 \keyword{internal}
-
