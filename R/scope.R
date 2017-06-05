@@ -58,6 +58,5 @@ NULL
   invisible(evalPromiseCode("expr"))
 }
 
-#' @rdname SCOPE
 #' @export
 SCOPE <- "Use me as the left hand side to the scope operator '%->%'."
