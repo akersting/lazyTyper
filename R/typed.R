@@ -130,6 +130,9 @@ cast <- function(x, type, ..., env = parent.frame(), inherits = TRUE,
 
   withCallingHandlers(
     checkType(varname, env = this_env),
+    dynamicPropertiesError = function(e) {
+      removeFromLazyTyperEnv(varname, env = this_env)
+    },
     invalidTypeError = function(e) {
       removeFromLazyTyperEnv(varname, env = this_env)
     }

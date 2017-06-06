@@ -1,4 +1,14 @@
 getCheckFun <- function(type, fun_type, find_hidden = FALSE) {
+  if (!is.character(type) || length(type) != 1 || is.na(type)) {
+    signal(
+      stackError(
+        "'type' is not a character string.",
+        "syntaxError",
+        base_class = "lazyTyperError"
+      )
+    )
+  }
+
   fun_type <- match.arg(fun_type, c("checkPropertiesFun", "checkTypeFun"))
 
   # set env to the parent frame of the highest level call to a lazyTyper

@@ -185,3 +185,20 @@ The meaning of a completely empty or crossed out empty cell, i.e of an unset pro
 
 ## Registering Custom Types
 ToDo: explain how to register custom types and overload built-in types.
+
+
+## Advanced: Dynamic Properties
+In `declare` and `cast` the aditional properties can be language objects (names,
+calls or expressions). Every time the typed variable is checked, such property
+specifications are re-evaluated in the environment of the variable:
+
+```{r}
+X <- iris[1:100, ]
+declare("weights", "numeric", length = quote(nrow(X)))
+weights %<-% .(rep(1, 100))
+
+X <- iris[1:50, ]
+is.valid(weights)
+```
+
+

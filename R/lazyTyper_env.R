@@ -19,23 +19,31 @@ getFromLazyTyperEnv <- function(x, env) {
 }
 
 assignToLazyTyperEnv <- function(x, type, properties, env) {
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE)
+  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE,
+                        ifnotfound = NULL)
   if (is.null(lazyTyper_env)) {
-    assign(".lazyTyper_env", new.env(parent = emptyenv()), envir = env)
+    lazyTyper_env <- new.env(parent = emptyenv())
+    assign(".lazyTyper_env", lazyTyper_env, envir = env)
   }
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env)
 
-  properties <- checkProperties(type, properties)
+  dynamic_properties <- any(unlist(lapply(properties, is.language)))
+  properties <- checkProperties(type, properties,
+                                skip_check = dynamic_properties)
+  checkPropertiesFun <- attr(properties, "checkPropertiesFun")
+  attr(properties, "checkPropertiesFun") <- NULL
+
   checkTypeFun <- getCheckFun(type, "checkTypeFun")
 
   value <- list(type = type, properties = properties,
+                checkPropertiesFun = checkPropertiesFun,
                 checkTypeFun = checkTypeFun)
 
   assign(x, value, envir = lazyTyper_env)
 }
 
 removeFromLazyTyperEnv <- function(x, env) {
-  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE)
+  lazyTyper_env <- get0(".lazyTyper_env", envir = env, inherits = FALSE,
+                        ifnotfound = NULL)
   if (!is.null(lazyTyper_env)) {
     if (existsInLazyTyperEnv(x, env)) {
       base::remove(list = x, envir = lazyTyper_env)

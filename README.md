@@ -26,6 +26,8 @@ Use `declare` to type a non-existing variable and `cast` to type an existing one
 
 ``` r
 library(lazyTyper)
+#> Checking for a new development version of 'lazyTyper' on GitHub ...
+#> You already have the most recent version of this package.
 #> 
 #> Attaching package: 'lazyTyper'
 #> The following objects are masked from 'package:base':
@@ -409,3 +411,23 @@ Registering Custom Types
 ------------------------
 
 ToDo: explain how to register custom types and overload built-in types.
+
+Advanced: Dynamic Properties
+----------------------------
+
+In `declare` and `cast` the aditional properties can be language objects (names, calls or expressions). Every time the typed variable is checked, such property specifications are re-evaluated in the environment of the variable:
+
+``` r
+X <- iris[1:100, ]
+declare("weights", "numeric", length = quote(nrow(X)))
+weights %<-% .(rep(1, 100))
+
+X <- iris[1:50, ]
+is.valid(weights)
+#> [1] FALSE
+#> attr(,"errors")
+#> attr(,"errors")[[1]]
+#> <invalidPropertyValueError in is.valid(weights): 
+#> [lazyTyperError -> validationError] The variable 'weights' is invalid.
+#> [... -> invalidTypeError -> invalidPropertyValueError] The variable has the wrong length. Expected length: 50, actual length: 100.>
+```

@@ -106,6 +106,8 @@ NULL
     c(
       notTypedError = paste0("Cannot check type of variable '",
                              varname, "' after assignment."),
+      dynamicPropertiesError = paste0("Cannot check type of variable '",
+                                      varname, "' after assignment."),
       invalidTypeError = paste0("This assignment invalidated the variable '",
                                 varname, "'.")
     ), base_class = "lazyTyperError"
@@ -158,6 +160,7 @@ NULL
     "typedAssignmentError",
     c(
       notTypedError = paste0("This assignment is invalid."),
+      dynamicPropertiesError = paste0("This assignment is invalid."),
       invalidTypeError = paste0("This assignment would invalidate the ",
                                 "variable '", varname, "'.")
     ), base_class = "lazyTyperError"

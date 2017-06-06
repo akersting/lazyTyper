@@ -1,5 +1,5 @@
 # !diagnostics suppress=types, custom_types
-checkProperties <- function(type, properties) {
+checkProperties <- function(type, properties, skip_check = FALSE) {
   checkPropertiesFun <- getCheckFun(type, "checkPropertiesFun")
 
   setErrorContext(
@@ -16,5 +16,10 @@ checkProperties <- function(type, properties) {
                  base_class = "lazyTyperError")
   )
 
-  return(do.call(checkPropertiesFun, properties))
+  if (!skip_check) {
+    properties <- do.call(checkPropertiesFun, properties)
+  }
+  attr(properties, "checkPropertiesFun") <- checkPropertiesFun
+
+  properties
 }

@@ -24,23 +24,28 @@ assertType <- function(expr, type, ...) {
     base_class = "lazyTyperError"
   )
 
-  assignToLazyTyperEnv("value", type = type, properties = list(...),
-                       env = environment())
+  env <- new.env(parent = parent.frame())
+  assignToLazyTyperEnv(".lazyTyper_value", type = type, properties = list(...),
+                       env = env)
 
   unsetErrorContext("lazyTyperError")
   contextualize(
-    evalPromiseCode("expr", reference_name = "value"),
+    evalPromiseCode("expr", reference_name = ".lazyTyper_value",
+                    reference_env = env),
     error = list(message = "Failed to evaluate 'expr'.",
                  class = "assertError",
                  base_class = "lazyTyperError")
   )
 
   setErrorContext(
-    "assertError",
-    "The return value of the expression is not of the specified type.",
+    "assertError", c(
+      "Failed to assert the type of the expression.",
+      invalidTypeError =
+        "The return value of the expression is not of the specified type."
+    ),
     base_class = "lazyTyperError"
   )
-  checkType("value", environment())
+  checkType(".lazyTyper_value", env)
 
-  invisible(simpleGet("value"))
+  invisible(simpleGet(".lazyTyper_value", env))
 }
