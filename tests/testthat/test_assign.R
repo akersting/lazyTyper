@@ -1,5 +1,16 @@
 context("assign")
 
+test_that("assign fails for invalid RHS", {
+  declare(a, "numeric")
+  expect_error(a %<-% 1)
+  expect_error(a %<-% .())
+  expect_error(a %<-% .(1, 1))
+
+  expect_error(a %<-s% 1)
+  expect_error(a %<-s% .())
+  expect_error(a %<-s% .(1, 1))
+})
+
 test_that("assign fails for undeclared/untyped variable", {
   expect_error(a %<-% .(1))
   expect_error(a %<-s% .(1))
@@ -33,8 +44,7 @@ test_that("assign works as expected for complex expressions", {
   expect_equal(names(a), letters[1:3])
   names(a)[2] %<-% .("z")
   expect_equal(names(a), c("a", "z", "c"))
-  expect_error(class(a) %<-% "character")
-  expect_error(class(names(a)) %<-% "character")
+  expect_error(class(a) %<-% .("character"))
 })
 
 test_that("assign returns the RHS", {
