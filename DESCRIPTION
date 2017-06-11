@@ -24,6 +24,6 @@ Suggests: testthat,
     rstudioapi,
     covr,
     digest
-Imports: conditionR,
+Imports: conditionR (>= 0.0.0.9007),
     compiler
 Remotes: akersting/conditionR@develop
