@@ -1,5 +1,3 @@
-#' @useDynLib lazyTyper
-
 # Get the Value of the \code{named} Field of a Variable
 #
 # @param varname the name of the variable as a character string.
@@ -10,7 +8,7 @@
 #
 # @return the value of the \code{named} field (currently either 0L, 1L or 2L).
 getNamed <- function(varname, env = parent.frame()) {
-  .Call("getNamed", varname = varname, env = env, PACKAGE = "lazyTyper")
+  .Call(C_getNamed, varname = varname, env = env)
 }
 
 
@@ -25,8 +23,7 @@ getNamed <- function(varname, env = parent.frame()) {
 #
 # @return NULL (invisibly).
 setNamed <- function(varname, named, env = parent.frame()) {
-  invisible(.Call("setNamed", varname = varname, named = named, env = env,
-                  PACKAGE = "lazyTyper"))
+  invisible(.Call(C_setNamed, varname = varname, named = named, env = env))
 }
 
 
@@ -45,9 +42,8 @@ setNamed <- function(varname, named, env = parent.frame()) {
 # @return \code{expr} (evaluated).
 eval2Reference <- function(expr, reference_name, eval_env = parent.frame(),
                            reference_env = parent.frame()) {
-  .Call("eval2Reference", expr = expr, reference_name = reference_name,
-        eval_env = eval_env, reference_env = reference_env,
-        PACKAGE = "lazyTyper")
+  .Call(C_eval2Reference, expr = expr, reference_name = reference_name,
+        eval_env = eval_env, reference_env = reference_env)
 }
 
 
@@ -83,9 +79,9 @@ eval2Reference <- function(expr, reference_name, eval_env = parent.frame(),
 evalPromiseCode <- function(promise_name, promise_env = parent.frame(),
                             reference_name = promise_name,
                             reference_env = promise_env) {
-  .Call("evalPromiseCode", promise_name = promise_name,
+  .Call(C_evalPromiseCode, promise_name = promise_name,
         promise_env = promise_env, reference_name = reference_name,
-        reference_env = reference_env, PACKAGE = "lazyTyper")
+        reference_env = reference_env)
 }
 
 
@@ -101,5 +97,5 @@ evalPromiseCode <- function(promise_name, promise_env = parent.frame(),
 #
 # @param the value of \code{varname} in \code{env}.
 simpleGet <- function(varname, env = parent.frame()) {
-  .Call("simpleGet", varname = varname, env = env, PACKAGE = "lazyTyper")
+  .Call(C_simpleGet, varname = varname, env = env)
 }

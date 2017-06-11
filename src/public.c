@@ -4,6 +4,7 @@
  * The documentation of these functions is in R/public_c.R.
  */
 
+#include "public.h"
 #include <Rinternals.h>
 
 SEXP hasValue(SEXP x, SEXP env) {

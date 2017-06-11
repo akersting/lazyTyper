@@ -19,7 +19,7 @@
 #' @keywords internal
 #' @export
 hasValue <- function(x, env = parent.frame()) {
-  .Call("hasValue", x = x, env = env, PACKAGE = "lazyTyper")
+  .Call(C_hasValue, x = x, env = env)
 }
 
 #' Enhanced Mode/Type Determination
@@ -45,5 +45,5 @@ hasValue <- function(x, env = parent.frame()) {
 #'
 #' @export
 iMode <- function(x) {
-  .Call("iMode", x = x, PACKAGE = "lazyTyper")
+  .Call(C_iMode, x = x)
 }
