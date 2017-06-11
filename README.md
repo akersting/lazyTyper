@@ -431,3 +431,45 @@ is.valid(weights)
 #> [lazyTyperError -> validationError] The variable 'weights' is invalid.
 #> [... -> invalidTypeError -> invalidPropertyValueError] The variable has the wrong length. Expected length: 50, actual length: 100.>
 ```
+
+Advanced: Fail Assignments on Warning
+-------------------------------------
+
+Default behavior:
+
+``` r
+declare(num, "numeric")
+num %<-% .(1:10)
+
+num[1:4] %<-% .(1:3)
+#> Warning in num[1:4] <- 1:3: number of items to replace is not a multiple of
+#> replacement length
+```
+
+Fail on warnings *during the assignment*:
+
+``` r
+.lazyTyper_warning2error <- TRUE
+
+num[1:4] %<-% .(1:3)
+#> Error in num[1:4] %<-% .(1:3): 
+#> [lazyTyperError -> typedAssignmentError -> assignmentWarningError] A warning occured during the assignment. | number of items to replace is not a multiple of replacement length
+
+one <- function() {
+  warning("A warning!")
+  1
+}
+num[1] %<-% .(one())
+#> Warning in one(): A warning!
+```
+
+Enable additions checks:
+
+``` r
+.lazyTyper_warning2error <- TRUE
+.lazyTyper_hard_bounds <- TRUE
+
+num[11] %<-% .(11)
+#> Error in num[11] %<-% .(11): 
+#> [lazyTyperError -> typedAssignmentError -> assignmentWarningError] A warning occured during the assignment. | assignment outside vector/list limits (extending from 10 to 11)
+```

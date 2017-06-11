@@ -64,6 +64,21 @@ The right hand side of a typed assignment must be wrapped in
 As base \code{\link{<-}}, \code{\%<-\%} and \code{\%<-s\%} use
   positional matching of arguments.
 }
+\section{Options}{
+ If the \emph{local} variable
+  \code{.lazyTyper_warning2error} exists and \code{\link[base]{isTRUE}}, then
+  the assignment will fail if the base assignment operator, which is used
+  internally for the actual assignment, issues a warning, e.g. the famous
+  "number of items to replace is not a multiple of replacement length".
+  \emph{Local} here means in the environment of the assignment, or in an
+  enclosing environment up to (and including) the first namespace or the
+  global environment. If \emph{additionally} the local variable
+  \code{.lazyTyper_hard_bounds} \code{\link[base]{isTRUE}} then the
+  \code{\link[base]{option}} "check.bounds" is enabled for the time of this
+  assignment and hence extending a vector (atomic or list) by something like
+  \code{x <- 1:3; x[5] \%<-\% .(6)} will fail.
+}
+
 \section{RStudio Addin}{
  This package ships with addins for RStudio (>=
   v0.99.1111) for quickly inserting \code{\%<-\% .()} and \code{\%<-s\% .()}.

@@ -201,4 +201,32 @@ X <- iris[1:50, ]
 is.valid(weights)
 ```
 
+## Advanced: Fail Assignments on Warning
+Default behavior:
+```{r}
+declare(num, "numeric")
+num %<-% .(1:10)
 
+num[1:4] %<-% .(1:3)
+```
+
+Fail on warnings *during the assignment*:
+```{r, error = TRUE}
+.lazyTyper_warning2error <- TRUE
+
+num[1:4] %<-% .(1:3)
+
+one <- function() {
+  warning("A warning!")
+  1
+}
+num[1] %<-% .(one())
+```
+
+Enable additions checks:
+```{r, error = TRUE}
+.lazyTyper_warning2error <- TRUE
+.lazyTyper_hard_bounds <- TRUE
+
+num[11] %<-% .(11)
+```

@@ -1,5 +1,6 @@
 #include "internal.h"
 #include "public.h"
+#include "external.h"
 #include <R_ext/Rdynload.h>
 
 void R_init_lazyTyper(DllInfo *info) {
@@ -15,6 +16,8 @@ void R_init_lazyTyper(DllInfo *info) {
     {"iMode", (DL_FUNC) &iMode, 1},
     {"hasValue", (DL_FUNC) &hasValue, 2},
 
+    // external
+    {"getLocal0", (DL_FUNC) &getLocal0, 3},
     {NULL, NULL, 0}
   };
 

@@ -38,6 +38,19 @@
 #'   while the latter always has to create a copy of the variable, which for
 #'   large objects can have a significant negative impact on performance.
 #'
+#' @section Options: If the \emph{local} variable
+#'   \code{.lazyTyper_warning2error} exists and \code{\link[base]{isTRUE}}, then
+#'   the assignment will fail if the base assignment operator, which is used
+#'   internally for the actual assignment, issues a warning, e.g. the famous
+#'   "number of items to replace is not a multiple of replacement length".
+#'   \emph{Local} here means in the environment of the assignment, or in an
+#'   enclosing environment up to (and including) the first namespace or the
+#'   global environment. If \emph{additionally} the local variable
+#'   \code{.lazyTyper_hard_bounds} \code{\link[base]{isTRUE}} then the
+#'   \code{\link[base]{option}} "check.bounds" is enabled for the time of this
+#'   assignment and hence extending a vector (atomic or list) by something like
+#'   \code{x <- 1:3; x[5] \%<-\% .(6)} will fail.
+#'
 #' @note As base \code{\link{<-}}, \code{\%<-\%} and \code{\%<-s\%} use
 #'   positional matching of arguments.
 #'
@@ -95,12 +108,70 @@ NULL
          "expression wrapped in '.()'.")
   }
 
-  # do the actual assignment
-  cl[[1]] <- quote(`<-`)
-  cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
-  eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame())
 
-  # do the type checking
+  # do the actual assignment ---------------------------------------------------
+  # replace %<-% with <-
+  cl[[1]] <- quote(`<-`)
+
+  warning2error <- isTRUE(
+    getLocal0(".lazyTyper_warning2error", parent.frame(), FALSE)
+  )
+  hard_bounds <- isTRUE(
+    getLocal0(".lazyTyper_hard_bounds", parent.frame(), FALSE)
+  )
+  if (hard_bounds & !warning2error) {
+    signal(stackWarning(
+      paste0("'hard bounds checking' is enabled but not effective since ",
+             "'warning2error' is disabled."),
+      "hardBoundsNotEffectiveWarning",
+      "lazyTyperWarning"
+    ))
+  }
+
+  if (!warning2error) {
+    # default case
+    cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
+    eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame())
+  } else {
+    # warning2error (and hard_bounds) must only be effective for the actual
+    # assignment but not for the evaluation of the RHS; that is why we do the
+    # latter seperately here:
+    rhs <- cl[[3]][[2]]
+    eval2Reference(rhs, reference_name = "rhs", eval_env = parent.frame())
+
+    # we do not place the evaluated RHS directly in cl but rather a call to
+    # simpleGet; this ensures that we do not increase NAMED unnecessarily
+    cl[[3]][[1]] <- call(":::", quote(lazyTyper), quote(simpleGet))
+    cl[[3]][[2]] <- "rhs"
+    cl[[3]][[3]] <- environment()
+
+    opt_bak <- options(check.bounds = hard_bounds)
+    on.exit(options(opt_bak))
+
+    # don't use tryCatch here since we want to complete the assignment even if
+    # there is a warning
+    warning_obj <- NULL
+    withCallingHandlers(
+      eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame()),
+      warning = function(w) {
+        warning_obj <<- w
+        invokeRestart("muffleWarning")
+      }
+    )
+    options(opt_bak)
+    on.exit()
+
+    if (!is.null(warning_obj)) {
+      signal(stackError(
+        message = paste0("A warning occured during the assignment. | ",
+                         conditionMessage(warning_obj)),
+        class = c("typedAssignmentError", "assignmentWarningError"),
+        base_class = "lazyTyperError"
+      ))
+    }
+  }
+
+  # do the type checking -------------------------------------------------------
   setErrorContext(
     "typedAssignmentError",
     c(
@@ -150,12 +221,62 @@ NULL
     backup <- get(varname, envir = parent_frame)
   }
 
-  # do the actual assignment
+  # do the actual assignment ---------------------------------------------------
+  # replace %<-s% with <-
   cl[[1]] <- quote(`<-`)
-  cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
-  eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame())
 
-  # do the type checking
+  warning2error <- isTRUE(
+    getLocal0(".lazyTyper_warning2error", parent.frame(), FALSE)
+  )
+  hard_bounds <- isTRUE(
+    getLocal0(".lazyTyper_hard_bounds", parent.frame(), FALSE)
+  )
+  if (hard_bounds & !warning2error) {
+    signal(stackWarning(
+      paste0("'hard bounds checking' is enabled but not effective since ",
+             "'warning2error' is disabled."),
+      "hardBoundsNotEffectiveWarning",
+      "lazyTyperWarning"
+    ))
+  }
+
+  # see %<-% for more comments
+  if (!warning2error) {
+    cl[3] <- cl[[3]][2]  # RHS is wrapped in .()
+    eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame())
+  } else {
+    rhs <- cl[[3]][[2]]
+    eval2Reference(rhs, reference_name = "rhs", eval_env = parent.frame())
+    cl[[3]][[1]] <- call(":::", quote(lazyTyper), quote(simpleGet))
+    cl[[3]][[2]] <- "rhs"
+    cl[[3]][[3]] <- environment()
+
+    opt_bak <- options(check.bounds = hard_bounds)
+    on.exit(options(opt_bak))
+
+    # use tryCatch here since we do not want to complete the assignment if there
+    # is a warning; eval2Reference returns NULL
+    warning_obj <- tryCatch(
+      eval2Reference(cl, reference_name = "rhs", eval_env = parent.frame()),
+      warning = function(w) {
+        w
+      }
+    )
+    options(opt_bak)
+    on.exit()
+
+    if (!is.null(warning_obj)) {
+      signal(stackError(
+        message = paste0("A warning occured during the assignment. | ",
+                         conditionMessage(warning_obj)),
+        class = c("typedAssignmentError", "assignmentWarningError"),
+        base_class = "lazyTyperError"
+      ))
+    }
+  }
+
+
+  # do the type checking -------------------------------------------------------
   setErrorContext(
     "typedAssignmentError",
     c(
