@@ -5,10 +5,14 @@
 #' thrown if the assignment violates the variable's type or if the variable is
 #' untyped.
 #'
-#' @param x the name of a typed variable, an expression defining the part of a
-#'   typed variable to be replaced (e.g. \code{z[[1]]}) or the call of a
-#'   (subsetting) replacement function taking a typed variable as the first
-#'   argument (e.g. \code{names(z)} or \code{names(z)[1:3]}).
+#' @param x an arbitrary (valid) left hand side of an assignment implying the
+#'   creation/modification of a \emph{typed} variable, i.e. typically the name
+#'   of a typed variable, an expression defining the part of a typed variable to
+#'   be replaced (e.g. \code{z[[1]]}), the call of a (subsetting) replacement
+#'   function taking a typed variable as the first argument (e.g.
+#'   \code{names(z)} or \code{names(z)[1:3]}). More uncommon LHSs like
+#'   \code{"z"}, \code{is.na(z[1:3])} or \code{f(g(h(z))[1:3])} are also
+#'   supported.
 #' @param value a \emph{call} to \code{.()}.
 #' @param rhs the value to be assigned to \code{x}, i.e. an arbitrary (valid)
 #'   right hand side of an assignment.
