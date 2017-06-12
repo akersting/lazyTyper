@@ -7,19 +7,22 @@
 hasValue(x, env = parent.frame())
 }
 \arguments{
-\item{x}{the name of the object to test as a character string.}
+\item{x}{a character vector with the names of the objects to test.}
 
-\item{env}{the environment of the object to test. Defaults to the calling
+\item{env}{the environment of the objects to test. Defaults to the calling
 frame of this function.}
 }
+\value{
+a named logical vector.
+}
 \description{
-This function returns \code{FALSE} if an object with the name \code{x} does
-not exist or if it is identical to the empty name, which is used to represent
+This function returns \code{FALSE} if an object with a given name does not
+exist or if it is identical to the empty name, which is used to represent
 \emph{missing arguments} to a function \emph{without a default value}.
 Otherwise it returns \code{TRUE}.
 }
 \note{
-If \code{x} is a promise \code{TRUE} is returned independently of the
+If an object is a promise \code{TRUE} is returned independently of the
   value of the promise.
 }
 \seealso{

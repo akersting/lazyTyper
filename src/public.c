@@ -8,21 +8,41 @@
 #include <Rinternals.h>
 
 SEXP hasValue(SEXP x, SEXP env) {
-  if (TYPEOF(x) != STRSXP || length(x) != 1) {
-    error("'x' is not a character string");
+  if (TYPEOF(x) != STRSXP) {
+    error("'x' is not a character vector");
   }
   if (TYPEOF(env) != ENVSXP) {
     error("'env' is not an environment");
   }
 
-  SEXP varsym = installChar(STRING_ELT(x, 0));
-  SEXP var = findVarInFrame3(env, varsym, TRUE);
+  R_xlen_t x_len = XLENGTH(x);
+  SEXP res = PROTECT(allocVector(LGLSXP, x_len));
 
-  if (var == R_UnboundValue || var == R_MissingArg) {
-    return ScalarLogical(0);
+  SEXP varname;
+  SEXP varsym;
+  SEXP var;
+  int *res_lgl = LOGICAL(res);
+  for (R_xlen_t i = 0; i < x_len; i++) {
+    varname = STRING_ELT(x, i);
+    if (varname == NA_STRING) {
+      res_lgl[i] = NA_LOGICAL;
+      continue;
+    }
+
+    varsym = installChar(varname);
+    var = findVarInFrame3(env, varsym, TRUE);
+
+    if (var == R_UnboundValue || var == R_MissingArg) {
+      res_lgl[i] = 0;
+    } else {
+      res_lgl[i] = 1;
+    }
   }
 
-  return ScalarLogical(1);
+  setAttrib(res, R_NamesSymbol, x);
+  UNPROTECT(1);
+
+  return res;
 }
 
 const char *Mode(SEXP x) {

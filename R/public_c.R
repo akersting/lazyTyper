@@ -1,16 +1,18 @@
 #' Does an Argument (or Another Object) Exist and have a Value?
 #'
-#' This function returns \code{FALSE} if an object with the name \code{x} does
-#' not exist or if it is identical to the empty name, which is used to represent
+#' This function returns \code{FALSE} if an object with a given name does not
+#' exist or if it is identical to the empty name, which is used to represent
 #' \emph{missing arguments} to a function \emph{without a default value}.
 #' Otherwise it returns \code{TRUE}.
 #'
-#' @param x the name of the object to test as a character string.
-#' @param env the environment of the object to test. Defaults to the calling
+#' @param x a character vector with the names of the objects to test.
+#' @param env the environment of the objects to test. Defaults to the calling
 #'   frame of this function.
 #'
-#' @note If \code{x} is a promise \code{TRUE} is returned independently of the
+#' @note If an object is a promise \code{TRUE} is returned independently of the
 #'   value of the promise.
+#'
+#' @return a named logical vector.
 #'
 #' @seealso \code{\link[base]{exists}}, which returns \code{TRUE} also for
 #'   missing arguments and \code{\link[base]{missing}}, which returns
