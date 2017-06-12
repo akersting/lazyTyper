@@ -145,7 +145,7 @@ NULL
 
     # we do not place the evaluated RHS directly in cl but rather a call to
     # simpleGet; this ensures that we do not increase NAMED unnecessarily
-    cl[[3]][[1]] <- call(":::", quote(lazyTyper), quote(simpleGet))
+    cl[[3]][[1]] <- simpleGet
     cl[[3]][[2]] <- "rhs"
     cl[[3]][[3]] <- environment()
 
@@ -251,7 +251,7 @@ NULL
   } else {
     rhs <- cl[[3]][[2]]
     eval2Reference(rhs, reference_name = "rhs", eval_env = parent.frame())
-    cl[[3]][[1]] <- call(":::", quote(lazyTyper), quote(simpleGet))
+    cl[[3]][[1]] <- simpleGet
     cl[[3]][[2]] <- "rhs"
     cl[[3]][[3]] <- environment()
 
