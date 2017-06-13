@@ -6,6 +6,7 @@
 \alias{const}
 \alias{declare}
 \alias{untype}
+\alias{DP}
 \alias{is.typed}
 \alias{is.valid}
 \title{Typed Variables}
@@ -20,6 +21,8 @@ declare(x, type, ..., env = parent.frame(), .character = FALSE)
 
 untype(x, env = parent.frame(), inherits = FALSE, .character = FALSE)
 
+DP(expr)
+
 is.typed(x)
 
 is.valid(x)
@@ -31,7 +34,10 @@ is.valid(x)
 
 \item{...}{further properties of \code{x} to guarantee. The availability of
 additional properties depends on \code{type}. Both positional and partial
-matching are used on these arguments.}
+matching are used on these arguments. If a value is an object of class
+"DynamicProperty", this property specification is re-evaluated in the
+environment of the variable \code{x} every time \code{x} is checked. Hence,
+such a value should be a language object, e.g. created by \code{DP}.}
 
 \item{env}{the environment in which to look for \code{x} / where \code{x}
 should be declared. Defaults to the current environment.}
@@ -45,6 +51,8 @@ operate on or a character vector with the names of objects to operate on.
 
 \item{hash}{logical. Should hashing be used to detect if a constant was
 modified?}
+
+\item{expr}{any syntactically valid R expression.}
 }
 \value{
 For \code{declare} the empty name (invisibly) and for \code{cast} and
@@ -54,6 +62,8 @@ For \code{declare} the empty name (invisibly) and for \code{cast} and
   variables which were to be untyped. This allows shorthands of the following
   form for redeclaring/recasting variables: \code{cast(untype(var),
   "numeric", .character = TRUE)}.
+
+  For \code{DP} a language object of class "DynamicProperty".
 
   For \code{is.typed} either \code{TRUE} or \code{FALSE}, the former with two
   additional attributes: "type" (the type of \code{x} as a character string)
@@ -99,6 +109,12 @@ var \%<-\% .(letters[1:2])
 
 \dontrun{
 var \%<-\% .(c("a", "b", "c"))  # error: wrong length}
+
+x <- 1:10
+declare("w", "numeric", length = DP(length(x)))
+w \%<-\% .(1:10)
+x <- 1:20
+is.valid(w)  # FALSE; should be of length 20 now
 
 }
 \seealso{

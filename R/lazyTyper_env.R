@@ -26,11 +26,13 @@ assignToLazyTyperEnv <- function(x, type, properties, env) {
     assign(".lazyTyper_env", lazyTyper_env, envir = env)
   }
 
-  dynamic_properties <- any(unlist(lapply(properties, is.language)))
+  dynamic_properties <- any(unlist(lapply(properties, inherits,
+                                          what = "DynamicProperty")))
   properties <- checkProperties(type, properties,
                                 skip_check = dynamic_properties)
   checkPropertiesFun <- attr(properties, "checkPropertiesFun")
   attr(properties, "checkPropertiesFun") <- NULL
+  attr(properties, "dynamic_properties") <- dynamic_properties
 
   checkTypeFun <- getCheckFun(type, "checkTypeFun")
 

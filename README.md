@@ -415,11 +415,11 @@ ToDo: explain how to register custom types and overload built-in types.
 Advanced: Dynamic Properties
 ----------------------------
 
-In `declare` and `cast` the additional properties can be language objects (names, calls or expressions). Every time the typed variable is checked, such property specifications are re-evaluated in the environment of the variable:
+In `declare` and `cast` the additional properties can be language objects (names, calls or expressions) of class “DynamicProperty”, e.g. as created by `DP`. Every time the typed variable is checked, such property specifications are re-evaluated in the environment of the variable:
 
 ``` r
 X <- iris[1:100, ]
-declare("weights", "numeric", length = quote(nrow(X)))
+declare("weights", "numeric", length = DP(nrow(X)))
 weights %<-% .(rep(1, 100))
 
 X <- iris[1:50, ]

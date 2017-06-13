@@ -26,7 +26,8 @@ test_that("cast works with empty properties", {
   lazyTyper_env <- get(".lazyTyper_env", envir = env, inherits = FALSE)
   lazyTyper_obj <- get("a", envir = lazyTyper_env, inherits = FALSE)
   expect_equal(lazyTyper_obj$type, "numeric")
-  expect_equal(lazyTyper_obj$properties, list())
+  expect_equal(lazyTyper_obj$properties,
+               structure(list(), dynamic_properties = FALSE))
 })
 
 test_that("cast works with additional properties", {
@@ -36,7 +37,8 @@ test_that("cast works with additional properties", {
   lazyTyper_env <- get(".lazyTyper_env", envir = env, inherits = FALSE)
   lazyTyper_obj <- get("a", envir = lazyTyper_env, inherits = FALSE)
   expect_equal(lazyTyper_obj$type, "numeric")
-  expect_equal(lazyTyper_obj$properties, list(length = 1))
+  expect_equal(lazyTyper_obj$properties,
+               structure(list(length = enquote(1)), dynamic_properties = FALSE))
 })
 
 test_that("cast fails for wrong type", {

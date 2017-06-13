@@ -11,10 +11,16 @@ checkType <- function(varname, env) {
     checkPropertiesFun <- lazyTyperList[["checkPropertiesFun"]]
     checkTypeFun <- lazyTyperList[["checkTypeFun"]]
 
-    dynamic_properties <- any(unlist(lapply(properties, is.language)))
+    dynamic_properties <- attr(properties, "dynamic_properties")
     if (dynamic_properties) {
       contextualize(
-        properties <- sapply(properties, eval, envir = env, simplify = FALSE),
+        properties <- sapply(properties, function(x) {
+          if (inherits(x, "DynamicProperty")) {
+            eval(x, envir = env)
+          } else {
+            x
+          }
+        }, simplify = FALSE),
         error = list(
           class = "dynamicPropertiesError",
           message = "Error during the evaluation of the dynamic properties.",
@@ -27,13 +33,14 @@ checkType <- function(varname, env) {
         base_class = "lazyTyperError"
       )
       properties <- do.call(checkPropertiesFun, properties, quote = TRUE)
+      properties <- lapply(properties, enquote)
     }
 
     setErrorContext("invalidTypeError",
                     base_class = "lazyTyperError")
 
-    do.call(checkTypeFun, c(x = list(simpleGet(varname, env)),
-                            properties), quote = TRUE)
+    do.call(checkTypeFun, c(x = list(enquote(simpleGet(varname, env))),
+                            properties), quote = FALSE)
   } else {
     signal(
       stackError("This is not a typed variable.",

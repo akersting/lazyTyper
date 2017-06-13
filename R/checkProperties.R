@@ -17,7 +17,8 @@ checkProperties <- function(type, properties, skip_check = FALSE) {
   )
 
   if (!skip_check) {
-    properties <- do.call(checkPropertiesFun, properties)
+    properties <- do.call(checkPropertiesFun, properties, quote = TRUE)
+    properties <- lapply(properties, enquote)
   }
   attr(properties, "checkPropertiesFun") <- checkPropertiesFun
 

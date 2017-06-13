@@ -7,7 +7,10 @@
 #' @param type the desired type of \code{x} (as a character string).
 #' @param ... further properties of \code{x} to guarantee. The availability of
 #'   additional properties depends on \code{type}. Both positional and partial
-#'   matching are used on these arguments.
+#'   matching are used on these arguments. If a value is an object of class
+#'   "DynamicProperty", this property specification is re-evaluated in the
+#'   environment of the variable \code{x} every time \code{x} is checked. Hence,
+#'   such a value should be a language object, e.g. created by \code{DP}.
 #' @param env the environment in which to look for \code{x} / where \code{x}
 #'   should be declared. Defaults to the current environment.
 #' @param inherits a logical value indicating if the enclosing frames of the
@@ -47,6 +50,8 @@
 #'   form for redeclaring/recasting variables: \code{cast(untype(var),
 #'   "numeric", .character = TRUE)}.
 #'
+#'   For \code{DP} a language object of class "DynamicProperty".
+#'
 #'   For \code{is.typed} either \code{TRUE} or \code{FALSE}, the former with two
 #'   additional attributes: "type" (the type of \code{x} as a character string)
 #'   and "properties" (a possibly empty list of additional properties of
@@ -68,6 +73,12 @@
 #'
 #' \dontrun{
 #' var %<-% .(c("a", "b", "c"))  # error: wrong length}
+#'
+#' x <- 1:10
+#' declare("w", "numeric", length = DP(length(x)))
+#' w %<-% .(1:10)
+#' x <- 1:20
+#' is.valid(w)  # FALSE; should be of length 20 now
 #'
 #' @name typed
 NULL
@@ -277,6 +288,15 @@ untype <- function(x, env = parent.frame(), inherits = FALSE,
 }
 
 #' @rdname typed
+#'
+#' @param expr any syntactically valid R expression.
+#'
+#' @export
+DP <- function(expr) {
+  structure(substitute(expr), class = "DynamicProperty")
+}
+
+#' @rdname typed
 #' @export
 is.typed <- function(x) {
   setErrorContext(
@@ -285,12 +305,20 @@ is.typed <- function(x) {
   )
 
   varname <- getVarNames(x, sx = substitute(x), .character = FALSE)
+  env <- parent.frame()
 
-  lazyTyperList <- getFromLazyTyperEnv(varname, env = parent.frame())
+  lazyTyperList <- getFromLazyTyperEnv(varname, env = env)
   if (!is.null(lazyTyperList)) {
     res <- TRUE
     attr(res, "type") <- lazyTyperList[["type"]]
-    attr(res, "properties") <- lazyTyperList[["properties"]]
+
+    properties <- lazyTyperList[["properties"]]
+    if (!attr(properties, "dynamic_properties")) {
+      properties <- sapply(properties, eval, envir = env, simplify = FALSE)
+    }
+    attr(properties, "dynamic_properties") <- NULL
+    attr(res, "properties") <- properties
+
     return(res)
   } else {
     return(FALSE)
