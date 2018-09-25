@@ -10,3 +10,4 @@ This type does not accept any additional arguments passed as \code{...} to
 \details{
 Any R object is a valid instance of this type.
 }
+\concept{types}

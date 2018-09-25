@@ -6,8 +6,8 @@
 \title{A Replacement for base \code{\link[base]{remove}}/\code{\link[base]{rm}} with
 Support for Typed Variables}
 \usage{
-remove(..., list = character(), pos = -1, envir = as.environment(pos),
-  inherits = FALSE, .untype = TRUE)
+remove(..., list = character(), pos = -1,
+  envir = as.environment(pos), inherits = FALSE, .untype = TRUE)
 
 rm(..., list = character(), pos = -1, envir = as.environment(pos),
   inherits = FALSE, .untype = TRUE)
