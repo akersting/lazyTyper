@@ -42,8 +42,8 @@ SEXP setNamed(SEXP varname, SEXP named, SEXP env) {
     error("'named' is not a single number");
   }
   int named_int = asInteger(named);
-  if (named_int < 0 || named_int > 2) {
-    error("'named' cannot be coerced to 0L, 1L or 2L");
+  if (named_int < 0 || named_int > NAMEDMAX) {
+    error("'named' cannot be coerced to 0L, ..., NAMEDMAX");
   }
 
   SEXP varsym = installChar(STRING_ELT(varname, 0));

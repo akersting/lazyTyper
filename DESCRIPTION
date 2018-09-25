@@ -1,7 +1,7 @@
 Package: lazyTyper
 Type: Package
 Title: Strong and Explicit Typing for R
-Version: 0.0.0.9023
+Version: 0.0.0.9024
 Date: 2018-09-25
 Authors@R: c(person("Andreas", "Kersting", role = c("aut", "cre"),
     email = "andreas@akersting.de"), person("R Core team", role = "ctb",
